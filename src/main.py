@@ -3,7 +3,7 @@ from os import environ
 from subprocess import call
 import sys
 
-from pytz import timezone
+import pytz
 
 # Add more test directories here...
 from eatery import eatery_tests
@@ -20,8 +20,11 @@ FAILURE_STATUS = 'FAILURE'
 num_tests = sum([len(test_group.tests) for test_group in test_groups])
 num_failures = 0
 
-tz = timezone('EST')
-current_time = datetime.now(tz).strftime('%m-%d %I:%M%p')
+utc_time = datetime.utcnow()
+tz = pytz.timezone('EST')
+current_time = pytz.utc.localize(utc_time).astimezone(tz)
+current_time = current_time.strftime('%m/%d %I:%M%p')
+
 slack_message_text = '*Starting new test run at {}:*\n'.format(current_time)
 
 for test_group in test_groups:

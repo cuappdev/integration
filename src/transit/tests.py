@@ -5,6 +5,21 @@ from models import Request, Test, TestGroup
 
 BASE_URL = environ['TRANSIT_BACKEND_URL']
 
+def route_number_non_null_callback(r):
+    response = r.json()
+    # Make sure response was successful
+    if not response['success']:
+        return False
+
+    # Iterate over directions
+    for route_directions in response['data']['boardingSoon']:
+        for direction in route_directions['directions']:
+            # Walking directions can have a [None] routeNumber
+            if direction['type'] != 'walk' and 'routeNumber' is None:
+                return False
+
+    return True
+
 tests = [
     Test(
         name='api/docs 200',
@@ -47,7 +62,7 @@ tests = [
                 "time": time.time(),
             }
         ),
-        callback=lambda r: not '''"routeNumber":null''' in r.text,
+        callback=route_number_non_null_callback
     ),
 ]
 
