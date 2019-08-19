@@ -3,6 +3,8 @@ from os import environ
 from subprocess import call
 import sys
 
+from pytz import timezone
+
 # Add more test directories here...
 from eatery import eatery_tests
 from transit import transit_tests
@@ -18,7 +20,9 @@ FAILURE_STATUS = 'FAILURE'
 num_tests = sum([len(test_group.tests) for test_group in test_groups])
 num_failures = 0
 
-slack_message_text = '*Starting new test run at {}:*\n'.format(datetime.now())
+tz = timezone('EST')
+current_time = datetime.now(tz).strftime('%m-%d %I:%M%p')
+slack_message_text = '*Starting new test run at {}:*\n'.format(current_time)
 
 for test_group in test_groups:
     slack_message_text += '\tRunning tests for {}...\n'.format(test_group.name)
@@ -41,11 +45,12 @@ for test_group in test_groups:
         slack_message_text += "> ```\n{}```\n".format(test_group_text)
 
 # We finished running all tests, finish formatting and send the output to Slack!
-slack_message_text += '\t*Summary: {}/{} tests passed!*'.format(num_tests - num_failures, num_tests)
+passed_tests = num_tests - num_failures
+slack_message_text += '\t*Summary: `{}/{}` tests passed!* '.format(passed_tests, num_tests)
 
 if num_failures:
     user_ids = environ['SLACK_USER_IDS']
-    slack_message_text += ' *Number of failures greater than 0... cc {}!*'.format(user_ids)
+    slack_message_text += 'cc {}!'.format(user_ids)
 
 # Read output and send to server if necessary
 if len(sys.argv) == 2:
