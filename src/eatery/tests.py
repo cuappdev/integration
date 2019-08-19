@@ -1,9 +1,16 @@
-from models import Test, TestGroup
+from os import environ
+
+from models import Request, Test, TestGroup
+
+BASE_URL = environ['EATERY_BACKEND_URL']
 
 tests = [
     Test(
         name='Eateries on Campus query',
-        url='http://eatery-backend.cornellappdev.com/?query=query%7B%0Aeateries%20%7Bname%7D%7D',
+        request=Request(
+            method='GET',
+            url=BASE_URL + '?query=query%7Beateries%20%7Bname%7D%7D',
+        )
     ),
 ]
 
