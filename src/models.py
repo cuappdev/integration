@@ -43,4 +43,7 @@ class Test:
 
     def is_success(self):
         r = self.request.call()
-        return r.status_code == 200 and self.callback(r)
+        try:
+            return r.status_code == 200 and self.callback(r)
+        except:
+            return False
