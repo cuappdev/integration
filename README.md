@@ -1,11 +1,13 @@
 # integration
 Run integration tests on deployed backends on an interval, and post results to Slack.
 
+![Test Output](assets/demo.png)
+
 ## Setup
 
 Environment variables can be found by asking a member of AppDev.
 
-```
+```bash
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
