@@ -4,11 +4,13 @@ from subprocess import call
 import sys
 
 # Add more test directories here...
+from coursegrab import coursegrab_tests
 from eatery import eatery_tests
 from transit import transit_tests
+from uplift import uplift_tests
 
 # And add the test group here as well!
-test_groups = [eatery_tests, transit_tests]
+test_groups = [coursegrab_tests, eatery_tests, transit_tests, uplift_tests]
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  APPLICATION CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
