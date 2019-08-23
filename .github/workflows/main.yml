@@ -1,0 +1,27 @@
+name: Main
+
+on:
+  schedule:
+  - cron: '*/15 * * * *'
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Setup Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: '3.6'
+        architecture: 'x64'
+    - name: Install dependencies
+      run: python3.6 -m venv venv; source venv/bin/activate; pip install -r requirements.txt
+    - name: Run main.py
+      env:
+        SLACK_HOOK_URL: ${{ secrets.SLACK_HOOK_URL }}
+        SLACK_USER_IDS: ${{ secrets.SLACK_USER_IDS }}
+        EATERY_BACKEND_URL: ${{ secrets.EATERY_BACKEND_URL }}
+        TRANSIT_BACKEND_URL: ${{ secrets.TRANSIT_BACKEND_URL }}
+        UPLIFT_BACKEND_URL: ${{ secrets.UPLIFT_BACKEND_URL }}
+      run: source venv/bin/activate; python src/main.py
