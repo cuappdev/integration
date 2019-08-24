@@ -42,9 +42,11 @@ for test_group in test_groups:
         num_failures += test_group_failures
         slack_message_text += "> ```\n{}```\n".format(test_group_text)
 
-# We finished running all tests, finish formatting and send the output to Slack!
-passed_tests = num_tests - num_failures
-slack_message_text += '\t*Summary: `{}/{}` tests passed!* '.format(passed_tests, num_tests)
+if num_failures:
+    passed_tests = num_tests - num_failures
+    slack_message_text += '\t*Summary: `{}/{}` tests passed!* '.format(passed_tests, num_tests)
+else:
+    slack_message_text = '*`{0}/{0}` tests passed :white_check_mark:*'.format(num_tests)
 
 if num_failures:
     user_ids = environ['SLACK_USER_IDS']
