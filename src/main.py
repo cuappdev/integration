@@ -45,12 +45,11 @@ for test_group in test_groups:
 if num_failures:
     passed_tests = num_tests - num_failures
     slack_message_text += '\t*Summary: `{}/{}` tests passed!* '.format(passed_tests, num_tests)
-else:
-    slack_message_text = '*`{0}/{0}` tests passed :white_check_mark:*'.format(num_tests)
-
-if num_failures:
+    # Tag appropriate users
     user_ids = environ['SLACK_USER_IDS']
     slack_message_text += 'cc {}!'.format(user_ids)
+else:
+    slack_message_text = '*`{0}/{0}` tests passed :white_check_mark:*'.format(num_tests)
 
 # Read output and send to server if necessary
 if len(sys.argv) == 2:
@@ -60,6 +59,8 @@ if len(sys.argv) == 2:
     else:
         print('Unsupported operation, exiting...\n')
 
-CURL_PREFIX = '''curl -X POST -H 'Content-type: application/json' --data '''
-CURL_BODY = """'{{ "text": "{}" }}' """.format(slack_message_text)
-call(CURL_PREFIX + CURL_BODY + environ['SLACK_HOOK_URL'], shell=True)
+if num_failures:
+    # Suppress output, this behavior can be changed in the future!
+    CURL_PREFIX = '''curl -X POST -H 'Content-type: application/json' --data '''
+    CURL_BODY = """'{{ "text": "{}" }}' """.format(slack_message_text)
+    call(CURL_PREFIX + CURL_BODY + environ['SLACK_HOOK_URL'], shell=True)

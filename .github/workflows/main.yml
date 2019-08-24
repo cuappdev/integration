@@ -2,7 +2,7 @@ name: Main
 
 on:
   schedule:
-  - cron: '*/15 * * * *'
+  - cron: '*/10 * * * *'
 
 jobs:
   run-script:
