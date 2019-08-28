@@ -3,6 +3,8 @@ from os import environ
 from subprocess import call
 import sys
 
+from models import Result
+
 # Add more test directories here...
 from coursegrab import coursegrab_tests
 from eatery import eatery_tests
@@ -31,11 +33,11 @@ for test_group in test_groups:
     for test in test_group.tests:
         test_status = SUCCESS_STATUS # default to printing success
 
-        if not test.is_success():
-            test_status = 'FAILURE'
+        test_result = test.get_result()
+        if test_result != Result.SUCCESS:
             test_group_failures += 1
 
-        test_group_text += '[{}] - {}\n'.format(test.name, test_status)
+        test_group_text += '[{}] - {}\n'.format(test.name, test_result.name)
 
     # Only print output if there was more than 0 failures in the group
     if test_group_failures != 0:

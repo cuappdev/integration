@@ -1,3 +1,4 @@
+from enum import Enum, auto
 import requests
 
 """
@@ -19,12 +20,20 @@ class Request:
 
     def call(self):
         if self.method == 'GET':
-            return requests.get(self.url, params=self.payload)
+            return requests.get(self.url, params=self.payload, timeout=15)
         if self.method == 'POST':
-            return requests.post(self.url, json=self.payload)
+            return requests.post(self.url, json=self.payload, timeout=15)
 
         # More method types can be added here...
         raise Exception('Unsupported method type!')
+
+"""
+Result defines the result of running a test.
+"""
+class Result(Enum):
+    SUCCESS = auto()
+    ERROR = auto()
+    TIMEOUT = auto()
 
 """
 Test defines a test object, with an optional closure. More information on [closure] is
@@ -41,9 +50,13 @@ class Test:
         # If the value is not provided, a lambda that returns True is the default.
         self.callback = kwargs.get('callback', lambda r: True)
 
-    def is_success(self):
+    def get_result(self):
         r = self.request.call()
         try:
-            return r.status_code == 200 and self.callback(r)
+            if r.status_code == 200 and self.callback(r):
+                return Result.SUCCESS
+            return Result.ERROR
+        except requests.Timeout as _:
+            return Result.TIMEOUT
         except:
-            return False
+            return Result.ERROR
