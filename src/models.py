@@ -51,12 +51,12 @@ class Test:
         self.callback = kwargs.get('callback', lambda r: True)
 
     def get_result(self):
-        r = self.request.call()
         try:
+            r = self.request.call()
             if r.status_code == 200 and self.callback(r):
                 return Result.SUCCESS
             return Result.ERROR
-        except requests.Timeout as _:
+        except requests.exceptions.Timeout:
             return Result.TIMEOUT
-        except:
+        except requests.exceptions.RequestException:
             return Result.ERROR
