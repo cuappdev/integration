@@ -8,11 +8,17 @@ from models import Result
 # Add more test directories here...
 from coursegrab import coursegrab_tests
 from eatery import eatery_tests
-from transit import transit_tests
+from transit import transit_dev_tests, transit_prod_tests
 from uplift import uplift_tests
 
 # And add the test group here as well!
-test_groups = [coursegrab_tests, eatery_tests, transit_tests, uplift_tests]
+test_groups = [
+    coursegrab_tests,
+    eatery_tests,
+    transit_dev_tests,
+    transit_prod_tests,
+    uplift_tests,
+]
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  APPLICATION CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -53,10 +59,12 @@ if num_failures:
 else:
     slack_message_text = '*`{0}/{0}` tests passed :white_check_mark:*'.format(num_tests)
 
-# Read output and send to server if necessary
+# Always print output for debugging purposes
+print(slack_message_text)
+
+# Send output to server if necessary
 if len(sys.argv) == 2:
     if sys.argv[1] == '--local-only':
-        print(slack_message_text)
         exit()
     else:
         print('Unsupported operation, exiting...\n')
