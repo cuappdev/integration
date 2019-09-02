@@ -24,6 +24,14 @@ def route_number_non_null_callback(r):
 def generate_tests(base_url):
     return [
         Test(
+            name='Live Tracking 200',
+            request=Request(
+                method='GET',
+                # TODO: Change in future, currently 5000 can only be accessed over http
+                url=base_url[:-1].replace("https", "http") + ':5000',
+            ),
+        ),
+        Test(
             name='api/docs 200',
             request=Request(
                 method='GET',
