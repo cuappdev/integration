@@ -21,6 +21,19 @@ def route_number_non_null_callback(r):
 
     return True
 
+def no_walking_routes_in_boarding_soon(r):
+    response = r.json()
+    # Make sure response was successful
+    if not response['success']:
+        return False
+
+    # Iterate over directions
+    for route_directions in response['data']['boardingSoon']:
+        if route_directions['numberOfTransfers'] == -1:
+            return False
+
+    return True
+
 def generate_tests(base_url):
     return [
         Test(
@@ -56,7 +69,7 @@ def generate_tests(base_url):
                     "start": "42.449086,-76.483306",
                     "destinationName": 933,
                     "time": time.time(),
-                }
+                },
             ),
         ),
         Test(
@@ -70,9 +83,24 @@ def generate_tests(base_url):
                     "start": "42.449086,-76.483306",
                     "destinationName": 933,
                     "time": time.time(),
-                }
+                },
             ),
             callback=route_number_non_null_callback
+        ),
+        Test(
+            name='No walking routes in boardingSoon (/api/v2/route)',
+            request=Request(
+                method='POST',
+                url=base_url + 'api/v2/route/',
+                payload={
+                    "arriveBy": False,
+                    "end": "42.445228,-76.485053", # Uris Library
+                    "start": "42.440847,-76.483741", # Collegetown
+                    "destinationName": 933,
+                    "time": time.time(),
+                },
+            ),
+            callback=no_walking_routes_in_boarding_soon
         ),
     ]
 
