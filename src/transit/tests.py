@@ -3,66 +3,63 @@ from os import environ
 
 from models import Request, Test, TestGroup
 
-BASE_DEV_URL = environ['TRANSIT_DEV_BACKEND_URL']
-BASE_PROD_URL = environ['TRANSIT_BACKEND_URL']
+BASE_DEV_URL = environ["TRANSIT_DEV_BACKEND_URL"]
+BASE_PROD_URL = environ["TRANSIT_BACKEND_URL"]
+
 
 def route_number_non_null_callback(r):
     response = r.json()
     # Make sure response was successful
-    if not response['success']:
+    if not response["success"]:
         return False
 
     # Iterate over directions
-    for route_directions in response['data']['boardingSoon']:
-        for direction in route_directions['directions']:
+    for route_directions in response["data"]["boardingSoon"]:
+        for direction in route_directions["directions"]:
             # Walking directions can have a [None] routeNumber
-            if direction['type'] != 'walk' and 'routeNumber' is None:
+            if direction["type"] != "walk" and "routeNumber" is None:
                 return False
 
     return True
 
+
 def no_walking_routes_in_boarding_soon(r):
     response = r.json()
     # Make sure response was successful
-    if not response['success']:
+    if not response["success"]:
         return False
 
     # Iterate over directions
-    for route_directions in response['data']['boardingSoon']:
-        if route_directions['numberOfTransfers'] == -1:
+    for route_directions in response["data"]["boardingSoon"]:
+        if route_directions["numberOfTransfers"] == -1:
             return False
 
     return True
 
+
 def generate_tests(base_url):
     return [
         Test(
-            name='Live Tracking 200',
+            name="Live Tracking 200",
             request=Request(
-                method='GET',
+                method="GET",
                 # TODO: Change in future, currently 5000 can only be accessed over http
-                url=base_url[:-1].replace("https", "http") + ':5000',
+                url=base_url[:-1].replace("https", "http") + ":5000",
             ),
         ),
         Test(
-            name='api/docs 200',
-            request=Request(
-                method='GET',
-                url=base_url + 'api/docs/',
-            ),
+            name="api/docs 200",
+            request=Request(method="GET", url=base_url + "api/docs/"),
         ),
         Test(
-            name='api/v1/allstops 200',
-            request=Request(
-                method='GET',
-                url=base_url + 'api/v1/allstops/',
-            ),
+            name="api/v1/allstops 200",
+            request=Request(method="GET", url=base_url + "api/v1/allstops/"),
         ),
         Test(
-            name='api/v2/route 200',
+            name="api/v2/route 200",
             request=Request(
-                method='POST',
-                url=base_url + 'api/v2/route/',
+                method="POST",
+                url=base_url + "api/v2/route/",
                 payload={
                     "arriveBy": False,
                     "end": "42.454197,-76.440651",
@@ -73,10 +70,10 @@ def generate_tests(base_url):
             ),
         ),
         Test(
-            name='api/v2/route does not contain -1',
+            name="api/v2/route does not contain -1",
             request=Request(
-                method='POST',
-                url=base_url + 'api/v2/route/',
+                method="POST",
+                url=base_url + "api/v2/route/",
                 payload={
                     "arriveBy": False,
                     "end": "42.454197,-76.440651",
@@ -85,24 +82,25 @@ def generate_tests(base_url):
                     "time": time.time(),
                 },
             ),
-            callback=route_number_non_null_callback
+            callback=route_number_non_null_callback,
         ),
         Test(
-            name='No walking routes in boardingSoon (/api/v2/route)',
+            name="No walking routes in boardingSoon (/api/v2/route)",
             request=Request(
-                method='POST',
-                url=base_url + 'api/v2/route/',
+                method="POST",
+                url=base_url + "api/v2/route/",
                 payload={
                     "arriveBy": False,
-                    "end": "42.445228,-76.485053", # Uris Library
-                    "start": "42.440847,-76.483741", # Collegetown
+                    "end": "42.445228,-76.485053",  # Uris Library
+                    "start": "42.440847,-76.483741",  # Collegetown
                     "destinationName": 933,
                     "time": time.time(),
                 },
             ),
-            callback=no_walking_routes_in_boarding_soon
+            callback=no_walking_routes_in_boarding_soon,
         ),
     ]
 
-transit_dev_tests = TestGroup(name='Transit Dev', tests=generate_tests(BASE_DEV_URL))
-transit_prod_tests = TestGroup(name='Transit Prod', tests=generate_tests(BASE_PROD_URL))
+
+transit_dev_tests = TestGroup(name="Transit Dev", tests=generate_tests(BASE_DEV_URL))
+transit_prod_tests = TestGroup(name="Transit Prod", tests=generate_tests(BASE_PROD_URL))
