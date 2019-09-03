@@ -6,7 +6,8 @@ from models import Request, Test, TestGroup
 BASE_DEV_URL = environ["TRANSIT_DEV_BACKEND_URL"]
 BASE_PROD_URL = environ["TRANSIT_BACKEND_URL"]
 
-
+# We want to verify that route numbers are non-null, or that they will not show up as
+# -1 inside of the application.
 def route_number_non_null_callback(r):
     response = r.json()
     # Make sure response was successful
@@ -23,6 +24,8 @@ def route_number_non_null_callback(r):
     return True
 
 
+# The 'Boarding Soon' section should not contain any walking routes, as they should
+# be explicitly within the 'Walking' section.
 def no_walking_routes_in_boarding_soon(r):
     response = r.json()
     # Make sure response was successful
