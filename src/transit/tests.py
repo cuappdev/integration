@@ -40,6 +40,26 @@ def no_walking_routes_in_boarding_soon(r):
     return True
 
 
+# We want to ensure that given a query string, /search does not result in an error,
+# namely "Cannot read property 'filter' of null," and instead returns a list of
+# valid suggestions - autocomplete results that are either of type 'busStop' or 'googlePlace'.
+def search_returns_suggestions(r):
+    response = r.json()
+    # Make sure response was successful
+    if not response["success"]:
+        return False
+
+    # Iterate over search suggestions
+    for suggestion in response["data"]:
+        # Check that we do not get the "Cannot filter property null" error
+        if "type" not in suggestion or suggestion["type"] not in [
+            "googlePlace",
+            "busStop",
+        ]:
+            return False
+    return True
+
+
 def generate_tests(base_url):
     return [
         Test(
@@ -101,6 +121,15 @@ def generate_tests(base_url):
                 },
             ),
             callback=no_walking_routes_in_boarding_soon,
+        ),
+        Test(
+            name="api/v1/search contains googlePlaces and busStops",
+            request=Request(
+                method="POST", 
+                url=base_url + "api/v2/search/", 
+                payload={"query": "st"}
+            ),
+            callback=search_returns_suggestions,
         ),
     ]
 
