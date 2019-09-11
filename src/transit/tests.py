@@ -6,6 +6,20 @@ from models import Request, Test, TestGroup
 BASE_DEV_URL = environ["TRANSIT_DEV_BACKEND_URL"]
 BASE_PROD_URL = environ["TRANSIT_BACKEND_URL"]
 
+# We want to verify that /allstops returns a list of type 'busStop' only
+def allstops_returns_bus_stops(r):
+    response = r.json()
+    # Make sure response was successful
+    if not response["success"]:
+        return False
+
+    # Iterate over stops
+    for stop in response["data"]:
+        # Check that the BusStop object is properly decoded
+        if "type" not in stop or stop["type"] != "busStop":
+            return False
+    return True
+
 # We want to verify that route numbers are non-null, or that they will not show up as
 # -1 inside of the application.
 def route_number_non_null_callback(r):
@@ -23,7 +37,6 @@ def route_number_non_null_callback(r):
 
     return True
 
-
 # The 'Boarding Soon' section should not contain any walking routes, as they should
 # be explicitly within the 'Walking' section.
 def no_walking_routes_in_boarding_soon(r):
@@ -38,7 +51,6 @@ def no_walking_routes_in_boarding_soon(r):
             return False
 
     return True
-
 
 # We want to ensure that given a query string, /search does not result in an error,
 # namely "Cannot read property 'filter' of null," and instead returns a list of
@@ -58,7 +70,6 @@ def search_returns_suggestions(r):
         ]:
             return False
     return True
-
 
 def generate_tests(base_url):
     return [
@@ -125,14 +136,18 @@ def generate_tests(base_url):
         Test(
             name="api/v1/search contains googlePlaces and busStops",
             request=Request(
-                method="POST", 
-                url=base_url + "api/v2/search/", 
-                payload={"query": "st"}
+                method="POST",
+                url=base_url + "api/v2/search/",
+                payload={"query": "st"},
             ),
             callback=search_returns_suggestions,
         ),
+        Test(
+            name="api/v1/allstops only contains busStops",
+            request=Request(method="GET", url=base_url + "api/v1/allstops/"),
+            callback=allstops_returns_bus_stops,
+        ),
     ]
-
 
 transit_dev_tests = TestGroup(name="Transit Dev", tests=generate_tests(BASE_DEV_URL))
 transit_prod_tests = TestGroup(name="Transit Prod", tests=generate_tests(BASE_PROD_URL))
