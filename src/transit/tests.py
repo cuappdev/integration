@@ -20,6 +20,19 @@ def allstops_returns_bus_stops(r):
             return False
     return True
 
+
+# There should always be at least one walking route displayed to the user
+def at_least_one_walking_route(r):
+    response = r.json()
+    # Make sure response was successful
+    if not response["success"]:
+        return False
+
+    # Verify list of walking directions is not empty
+    walking_directions = response["data"]["walking"]
+    return walking_directions is not None or len(walking_directions) > 0
+
+
 # We want to verify that route numbers are non-null, or that they will not show up as
 # -1 inside of the application.
 def route_number_non_null_callback(r):
@@ -37,6 +50,7 @@ def route_number_non_null_callback(r):
 
     return True
 
+
 # The 'Boarding Soon' section should not contain any walking routes, as they should
 # be explicitly within the 'Walking' section.
 def no_walking_routes_in_boarding_soon(r):
@@ -52,6 +66,7 @@ def no_walking_routes_in_boarding_soon(r):
 
     return True
 
+
 # We want to ensure that given a query string, /search does not result in an error,
 # namely "Cannot read property 'filter' of null," and instead returns a list of
 # valid suggestions - autocomplete results that are either of type 'busStop' or 'googlePlace'.
@@ -64,12 +79,10 @@ def search_returns_suggestions(r):
     # Iterate over search suggestions
     for suggestion in response["data"]:
         # Check that we do not get the "Cannot filter property null" error
-        if "type" not in suggestion or suggestion["type"] not in [
-            "googlePlace",
-            "busStop",
-        ]:
+        if "type" not in suggestion or suggestion["type"] not in ["googlePlace", "busStop"]:
             return False
     return True
+
 
 def generate_tests(base_url):
     return [
@@ -81,10 +94,7 @@ def generate_tests(base_url):
                 url=base_url[:-1].replace("https", "http") + ":5000",
             ),
         ),
-        Test(
-            name="api/docs 200",
-            request=Request(method="GET", url=base_url + "api/docs/"),
-        ),
+        Test(name="api/docs 200", request=Request(method="GET", url=base_url + "api/docs/")),
         Test(
             name="api/v1/allstops 200",
             request=Request(method="GET", url=base_url + "api/v1/allstops/"),
@@ -136,9 +146,7 @@ def generate_tests(base_url):
         Test(
             name="api/v1/search contains googlePlaces and busStops",
             request=Request(
-                method="POST",
-                url=base_url + "api/v2/search/",
-                payload={"query": "st"},
+                method="POST", url=base_url + "api/v2/search/", payload={"query": "st"}
             ),
             callback=search_returns_suggestions,
         ),
@@ -147,7 +155,23 @@ def generate_tests(base_url):
             request=Request(method="GET", url=base_url + "api/v1/allstops/"),
             callback=allstops_returns_bus_stops,
         ),
+        Test(
+            name="At least one walking route shown (/api/v2/route)",
+            request=Request(
+                method="POST",
+                url=base_url + "api/v2/route/",
+                payload={
+                    "arriveBy": False,
+                    "end": "42.445228,-76.485053",  # Uris Library
+                    "start": "42.440847,-76.483741",  # Collegetown
+                    "destinationName": 933,
+                    "time": time.time(),
+                },
+            ),
+            callback=at_least_one_walking_route,
+        ),
     ]
+
 
 transit_dev_tests = TestGroup(name="Transit Dev", tests=generate_tests(BASE_DEV_URL))
 transit_prod_tests = TestGroup(name="Transit Prod", tests=generate_tests(BASE_PROD_URL))
