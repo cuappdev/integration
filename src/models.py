@@ -1,23 +1,22 @@
 from enum import Enum, auto
 import requests
 
-"""
-TestGroup defines a set of tests to be run for a specific application.
-"""
-
 
 class TestGroup:
+    """
+    TestGroup defines a set of tests to be run for a specific application.
+    """
+
     def __init__(self, **kwargs):
         self.name = kwargs["name"]
         self.tests = kwargs["tests"]
 
 
-"""
-Request defines a python [request] object
-"""
-
-
 class Request:
+    """
+    Request defines a python [request] object
+    """
+
     def __init__(self, **kwargs):
         self.method = kwargs["method"]
         self.url = kwargs["url"]
@@ -33,24 +32,22 @@ class Request:
         raise Exception("Unsupported method type!")
 
 
-"""
-Result defines the result of running a test.
-"""
-
-
 class Result(Enum):
+    """
+    Result defines the result of running a test.
+    """
+
     SUCCESS = auto()
     ERROR = auto()
     TIMEOUT = auto()
 
 
-"""
-Test defines a test object, with an optional closure. More information on [closure] is
-specified below.
-"""
-
-
 class Test:
+    """
+    Test defines a test object, with an optional closure. More information on [closure] is
+    specified below.
+    """
+
     def __init__(self, **kwargs):
         self.name = kwargs["name"]
         self.request = kwargs["request"]
