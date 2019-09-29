@@ -1,6 +1,9 @@
 export SLACK_HOOK_URL=""
 # It's important that the following env var is formatted exactly as follows!
-export SLACK_USER_IDS="<@U1>, <@U2>"
+export MAIN_SLACK_USER_IDS="<@U1>, <@U2>"
+export EATERY_SLACK_USER_IDS="<@U1>, <@U2>"
+export TRANSIT_SLACK_USER_IDS="<@U1>, <@U2>"
+export UPLIFT_SLACK_USER_IDS="<@U1>, <@U2>"
 
 # backend_urls
 export EATERY_BACKEND_URL=""

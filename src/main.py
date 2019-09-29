@@ -2,19 +2,7 @@ from datetime import datetime
 from os import environ
 from subprocess import call
 import sys
-import config
 from models import Result, Pod
-
-# REMOVE THESE AND CHANGE ACTUAL ENVIROMENT VARIABLES BEFORE PULL REQUEST
-environ["SLACK_HOOK_URL"] = config.hook_url
-environ["MAIN_SLACK_USER_IDS"] = config.main_user_ids
-environ["EATERY_SLACK_USER_IDS"] = config.eater_user_ids
-environ["TRANSIT_SLACK_USER_IDS"] = config.transit_user_ids
-environ["UPLIFT_SLACK_USER_IDS"] = config.uplift_user_ids
-environ["EATERY_BACKEND_URL"] = config.eatery_backend_url
-environ["TRANSIT_BACKEND_URL"] = config.transit_backend_url
-environ["TRANSIT_DEV_BACKEND_URL"] = config.transit_dev_backend_url
-environ["UPLIFT_BACKEND_URL"] = config.uplift_backend_url
 
 # Add more test directories here...
 from coursegrab import coursegrab_tests
