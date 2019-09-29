@@ -11,13 +11,7 @@ from transit import transit_dev_tests, transit_prod_tests
 from uplift import uplift_tests
 
 # And add the test group here as well!
-test_groups = [
-    coursegrab_tests,
-    eatery_tests,
-    transit_dev_tests,
-    transit_prod_tests,
-    uplift_tests,
-]
+test_groups = [coursegrab_tests, eatery_tests, transit_dev_tests, transit_prod_tests, uplift_tests]
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  APPLICATION CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -53,9 +47,7 @@ for test_group in test_groups:
 
 if num_failures:
     passed_tests = num_tests - num_failures
-    slack_message_text += "\t*Summary: `{}/{}` tests passed!* ".format(
-        passed_tests, num_tests
-    )
+    slack_message_text += "\t*Summary: `{}/{}` tests passed!* ".format(passed_tests, num_tests)
     # Tag appropriate users
     user_ids = environ["MAIN_SLACK_USER_IDS"]
     if pod_error_tracking[Pod.EATERY]:

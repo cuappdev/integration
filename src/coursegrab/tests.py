@@ -1,10 +1,8 @@
 from os import environ
 
-from models import Request, Test, TestGroup, Pod
+from models import Pod, Request, Test, TestGroup
 
-BASE_URL = (
-    "https://coursegrab.cornellappdev.com"
-)  # We don't need to mask this since it's public!
+BASE_URL = "https://coursegrab.cornellappdev.com"  # We don't need to mask this since it's public!
 
 tests = [Test(name="Root URL", request=Request(method="GET", url=BASE_URL))]
 

@@ -1,15 +1,13 @@
 from os import environ
 
-from models import Request, Test, TestGroup, Pod
+from models import Pod, Request, Test, TestGroup
 
 BASE_URL = environ["EATERY_BACKEND_URL"]
 
 tests = [
     Test(
         name="Eateries on Campus query",
-        request=Request(
-            method="GET", url=BASE_URL + "?query=query%7Beateries%20%7Bname%7D%7D"
-        ),
+        request=Request(method="GET", url=BASE_URL + "?query=query%7Beateries%20%7Bname%7D%7D"),
     )
 ]
 
