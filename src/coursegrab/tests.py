@@ -1,6 +1,6 @@
 from os import environ
 
-from models import Request, Test, TestGroup
+from models import Request, Test, TestGroup, Pod
 
 BASE_URL = (
     "https://coursegrab.cornellappdev.com"
@@ -8,4 +8,4 @@ BASE_URL = (
 
 tests = [Test(name="Root URL", request=Request(method="GET", url=BASE_URL))]
 
-coursegrab_tests = TestGroup(name="CourseGrab", tests=tests)
+coursegrab_tests = TestGroup(name="CourseGrab", tests=tests, pod=Pod.COURSEGRAB)

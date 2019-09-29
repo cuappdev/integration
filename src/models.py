@@ -10,6 +10,7 @@ class TestGroup:
     def __init__(self, **kwargs):
         self.name = kwargs["name"]
         self.tests = kwargs["tests"]
+        self.pod = kwargs["pod"]
 
 
 class Request:
@@ -40,6 +41,17 @@ class Result(Enum):
     SUCCESS = auto()
     ERROR = auto()
     TIMEOUT = auto()
+
+
+class Pod(Enum):
+    """
+    Pod defines which pod a test group belongs to
+    """
+
+    EATERY = auto()
+    TRANSIT = auto()
+    UPLIFT = auto()
+    COURSEGRAB = auto()
 
 
 class Test:

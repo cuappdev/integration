@@ -2,8 +2,19 @@ from datetime import datetime
 from os import environ
 from subprocess import call
 import sys
+import config
+from models import Result, Pod
 
-from models import Result
+# REMOVE THESE AND CHANGE ACTUAL ENVIROMENT VARIABLES BEFORE PULL REQUEST
+environ["SLACK_HOOK_URL"] = config.hook_url
+environ["MAIN_SLACK_USER_IDS"] = config.main_user_ids
+environ["EATERY_SLACK_USER_IDS"] = config.eater_user_ids
+environ["TRANSIT_SLACK_USER_IDS"] = config.transit_user_ids
+environ["UPLIFT_SLACK_USER_IDS"] = config.uplift_user_ids
+environ["EATERY_BACKEND_URL"] = config.eatery_backend_url
+environ["TRANSIT_BACKEND_URL"] = config.transit_backend_url
+environ["TRANSIT_DEV_BACKEND_URL"] = config.transit_dev_backend_url
+environ["UPLIFT_BACKEND_URL"] = config.uplift_backend_url
 
 # Add more test directories here...
 from coursegrab import coursegrab_tests
@@ -27,6 +38,7 @@ FAILURE_STATUS = "FAILURE"
 
 num_tests = sum([len(test_group.tests) for test_group in test_groups])
 num_failures = 0
+pod_error_tracking = {Pod.EATERY: False, Pod.TRANSIT: False, Pod.UPLIFT: False}
 
 slack_message_text = "*Starting new test run...*\n"
 
@@ -42,7 +54,8 @@ for test_group in test_groups:
         test_result = test.get_result()
         if test_result != Result.SUCCESS:
             test_group_failures += 1
-
+            # Mark that there is an error in this pod
+            pod_error_tracking[test_group.pod] = True
         test_group_text += "[{}] - {}\n".format(test.name, test_result.name)
 
     # Only print output if there was more than 0 failures in the group
@@ -56,7 +69,13 @@ if num_failures:
         passed_tests, num_tests
     )
     # Tag appropriate users
-    user_ids = environ["SLACK_USER_IDS"]
+    user_ids = environ["MAIN_SLACK_USER_IDS"]
+    if pod_error_tracking[Pod.EATERY]:
+        user_ids += ", " + environ["EATERY_SLACK_USER_IDS"]
+    if pod_error_tracking[Pod.TRANSIT]:
+        user_ids += ", " + environ["TRANSIT_SLACK_USER_IDS"]
+    if pod_error_tracking[Pod.UPLIFT]:
+        user_ids += ", " + environ["UPLIFT_SLACK_USER_IDS"]
     slack_message_text += "cc {}!".format(user_ids)
 else:
     slack_message_text = "*`{0}/{0}` tests passed :white_check_mark:*".format(num_tests)

@@ -1,6 +1,6 @@
 from os import environ
 
-from models import Request, Test, TestGroup
+from models import Request, Test, TestGroup, Pod
 
 BASE_URL = environ["UPLIFT_BACKEND_URL"]
 
@@ -13,4 +13,4 @@ tests = [
     )
 ]
 
-uplift_tests = TestGroup(name="Uplift", tests=tests)
+uplift_tests = TestGroup(name="Uplift", tests=tests, pod=Pod.UPLIFT)

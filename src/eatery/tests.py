@@ -1,6 +1,6 @@
 from os import environ
 
-from models import Request, Test, TestGroup
+from models import Request, Test, TestGroup, Pod
 
 BASE_URL = environ["EATERY_BACKEND_URL"]
 
@@ -13,4 +13,4 @@ tests = [
     )
 ]
 
-eatery_tests = TestGroup(name="Eatery", tests=tests)
+eatery_tests = TestGroup(name="Eatery", tests=tests, pod=Pod.EATERY)

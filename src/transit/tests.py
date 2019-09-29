@@ -1,7 +1,7 @@
 import time
 from os import environ
 
-from models import Request, Test, TestGroup
+from models import Request, Test, TestGroup, Pod
 
 BASE_DEV_URL = environ["TRANSIT_DEV_BACKEND_URL"]
 BASE_PROD_URL = environ["TRANSIT_BACKEND_URL"]
@@ -79,7 +79,10 @@ def search_returns_suggestions(r):
     # Iterate over search suggestions
     for suggestion in response["data"]:
         # Check that we do not get the "Cannot filter property null" error
-        if "type" not in suggestion or suggestion["type"] not in ["googlePlace", "busStop"]:
+        if "type" not in suggestion or suggestion["type"] not in [
+            "googlePlace",
+            "busStop",
+        ]:
             return False
     return True
 
@@ -94,7 +97,10 @@ def generate_tests(base_url):
                 url=base_url[:-1].replace("https", "http") + ":5000",
             ),
         ),
-        Test(name="api/docs 200", request=Request(method="GET", url=base_url + "api/docs/")),
+        Test(
+            name="api/docs 200",
+            request=Request(method="GET", url=base_url + "api/docs/"),
+        ),
         Test(
             name="api/v1/allstops 200",
             request=Request(method="GET", url=base_url + "api/v1/allstops/"),
@@ -173,5 +179,9 @@ def generate_tests(base_url):
     ]
 
 
-transit_dev_tests = TestGroup(name="Transit Dev", tests=generate_tests(BASE_DEV_URL))
-transit_prod_tests = TestGroup(name="Transit Prod", tests=generate_tests(BASE_PROD_URL))
+transit_dev_tests = TestGroup(
+    name="Transit Dev", tests=generate_tests(BASE_DEV_URL), pod=Pod.TRANSIT
+)
+transit_prod_tests = TestGroup(
+    name="Transit Prod", tests=generate_tests(BASE_PROD_URL), pod=Pod.TRANSIT
+)
