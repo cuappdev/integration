@@ -169,5 +169,5 @@ def generate_tests(base_url):
     ]
 
 
-transit_dev_tests = TestGroup(name="Transit Dev", tests=generate_tests(BASE_DEV_URL), pod=Pod.TRANSIT)
-transit_prod_tests = TestGroup(name="Transit Prod", tests=generate_tests(BASE_PROD_URL), pod=Pod.TRANSIT)
+transit_dev_tests = TestGroup(name="Transit Dev", , pod=Pod.TRANSIT, tests=generate_tests(BASE_DEV_URL))
+transit_prod_tests = TestGroup(name="Transit Prod", , pod=Pod.TRANSIT, tests=generate_tests(BASE_PROD_URL))

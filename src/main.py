@@ -2,7 +2,7 @@ from datetime import datetime
 from os import environ
 from subprocess import call
 import sys
-from models import Result, Pod
+from models import Pod, Result
 
 # Add more test directories here...
 from coursegrab import coursegrab_tests

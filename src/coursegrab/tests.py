@@ -6,4 +6,4 @@ BASE_URL = "https://coursegrab.cornellappdev.com"  # We don't need to mask this 
 
 tests = [Test(name="Root URL", request=Request(method="GET", url=BASE_URL))]
 
-coursegrab_tests = TestGroup(name="CourseGrab", tests=tests, pod=Pod.COURSEGRAB)
+coursegrab_tests = TestGroup(name="CourseGrab", pod=Pod.COURSEGRAB, tests=tests)

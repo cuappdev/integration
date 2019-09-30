@@ -7,4 +7,4 @@ URL_PARAMS = "?query=query%7Beateries%20%7Bname%7D%7D"
 
 tests = [Test(name="Eateries on Campus query", request=Request(method="GET", url=BASE_URL + URL_PARAMS))]
 
-eatery_tests = TestGroup(name="Eatery", tests=tests, pod=Pod.EATERY)
+eatery_tests = TestGroup(name="Eatery", pod=Pod.EATERY, tests=tests)
