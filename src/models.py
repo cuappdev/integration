@@ -9,13 +9,13 @@ class TestGroup:
 
     def __init__(self, **kwargs):
         self.name = kwargs["name"]
-        self.tests = kwargs["tests"]
         self.pod = kwargs["pod"]
+        self.tests = kwargs["tests"]
 
 
 class Request:
     """
-    Request defines a python [request] object
+    Request defines a python [request] object.
     """
 
     def __init__(self, **kwargs):
@@ -45,7 +45,7 @@ class Result(Enum):
 
 class Pod(Enum):
     """
-    Pod defines which pod a test group belongs to
+    Pod defines which pod a test group belongs to.
     """
 
     EATERY = auto()

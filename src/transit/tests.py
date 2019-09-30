@@ -6,6 +6,7 @@ from models import Pod, Request, Test, TestGroup
 BASE_DEV_URL = environ["TRANSIT_DEV_BACKEND_URL"]
 BASE_PROD_URL = environ["TRANSIT_BACKEND_URL"]
 
+
 # We want to verify that /allstops returns a list of type 'busStop' only
 def allstops_returns_bus_stops(r):
     response = r.json()

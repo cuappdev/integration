@@ -49,7 +49,7 @@ if num_failures:
     passed_tests = num_tests - num_failures
     slack_message_text += "\t*Summary: `{}/{}` tests passed!* ".format(passed_tests, num_tests)
     # Tag appropriate users
-    user_ids = environ["MAIN_SLACK_USER_IDS"]
+    user_ids = environ["ADMIN_SLACK_USER_IDS"]
     if pod_error_tracking[Pod.EATERY]:
         user_ids += ", " + environ["EATERY_SLACK_USER_IDS"]
     if pod_error_tracking[Pod.TRANSIT]:
