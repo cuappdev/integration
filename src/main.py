@@ -2,8 +2,7 @@ from datetime import datetime
 from os import environ
 from subprocess import call
 import sys
-
-from models import Result
+from models import Application, Result
 
 # Add more test directories here...
 from coursegrab import coursegrab_tests
@@ -12,13 +11,7 @@ from transit import transit_dev_tests, transit_prod_tests
 from uplift import uplift_tests
 
 # And add the test group here as well!
-test_groups = [
-    coursegrab_tests,
-    eatery_tests,
-    transit_dev_tests,
-    transit_prod_tests,
-    uplift_tests,
-]
+test_groups = [coursegrab_tests, eatery_tests, transit_dev_tests, transit_prod_tests, uplift_tests]
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  APPLICATION CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -27,6 +20,7 @@ FAILURE_STATUS = "FAILURE"
 
 num_tests = sum([len(test_group.tests) for test_group in test_groups])
 num_failures = 0
+application_error_tracking = {Application.EATERY: False, Application.TRANSIT: False, Application.UPLIFT: False}
 
 slack_message_text = "*Starting new test run...*\n"
 
@@ -42,7 +36,8 @@ for test_group in test_groups:
         test_result = test.get_result()
         if test_result != Result.SUCCESS:
             test_group_failures += 1
-
+            # Mark that there is an error in this pod
+            application_error_tracking[test_group.application] = True
         test_group_text += "[{}] - {}\n".format(test.name, test_result.name)
 
     # Only print output if there was more than 0 failures in the group
@@ -52,11 +47,15 @@ for test_group in test_groups:
 
 if num_failures:
     passed_tests = num_tests - num_failures
-    slack_message_text += "\t*Summary: `{}/{}` tests passed!* ".format(
-        passed_tests, num_tests
-    )
+    slack_message_text += "\t*Summary: `{}/{}` tests passed!* ".format(passed_tests, num_tests)
     # Tag appropriate users
-    user_ids = environ["SLACK_USER_IDS"]
+    user_ids = environ["ADMIN_SLACK_USER_IDS"]
+    if application_error_tracking[Application.EATERY]:
+        user_ids += ", " + environ["EATERY_SLACK_USER_IDS"]
+    if application_error_tracking[Application.TRANSIT]:
+        user_ids += ", " + environ["TRANSIT_SLACK_USER_IDS"]
+    if application_error_tracking[Application.UPLIFT]:
+        user_ids += ", " + environ["UPLIFT_SLACK_USER_IDS"]
     slack_message_text += "cc {}!".format(user_ids)
 else:
     slack_message_text = "*`{0}/{0}` tests passed :white_check_mark:*".format(num_tests)

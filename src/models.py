@@ -8,13 +8,14 @@ class TestGroup:
     """
 
     def __init__(self, **kwargs):
+        self.application = kwargs["application"]
         self.name = kwargs["name"]
         self.tests = kwargs["tests"]
 
 
 class Request:
     """
-    Request defines a python [request] object
+    Request defines a python [request] object.
     """
 
     def __init__(self, **kwargs):
@@ -40,6 +41,17 @@ class Result(Enum):
     SUCCESS = auto()
     ERROR = auto()
     TIMEOUT = auto()
+
+
+class Application(Enum):
+    """
+    Application defines which application a test group belongs to.
+    """
+
+    EATERY = auto()
+    TRANSIT = auto()
+    UPLIFT = auto()
+    COURSEGRAB = auto()
 
 
 class Test:

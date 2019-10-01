@@ -1,10 +1,11 @@
 import time
 from os import environ
 
-from models import Request, Test, TestGroup
+from models import Application, Request, Test, TestGroup
 
 BASE_DEV_URL = environ["TRANSIT_DEV_BACKEND_URL"]
 BASE_PROD_URL = environ["TRANSIT_BACKEND_URL"]
+
 
 # We want to verify that /allstops returns a list of type 'busStop' only
 def allstops_returns_bus_stops(r):
@@ -95,10 +96,7 @@ def generate_tests(base_url):
             ),
         ),
         Test(name="api/docs 200", request=Request(method="GET", url=base_url + "api/docs/")),
-        Test(
-            name="api/v1/allstops 200",
-            request=Request(method="GET", url=base_url + "api/v1/allstops/"),
-        ),
+        Test(name="api/v1/allstops 200", request=Request(method="GET", url=base_url + "api/v1/allstops/")),
         Test(
             name="api/v2/route 200",
             request=Request(
@@ -145,9 +143,7 @@ def generate_tests(base_url):
         ),
         Test(
             name="api/v1/search contains googlePlaces and busStops",
-            request=Request(
-                method="POST", url=base_url + "api/v2/search/", payload={"query": "st"}
-            ),
+            request=Request(method="POST", url=base_url + "api/v2/search/", payload={"query": "st"}),
             callback=search_returns_suggestions,
         ),
         Test(
@@ -173,5 +169,7 @@ def generate_tests(base_url):
     ]
 
 
-transit_dev_tests = TestGroup(name="Transit Dev", tests=generate_tests(BASE_DEV_URL))
-transit_prod_tests = TestGroup(name="Transit Prod", tests=generate_tests(BASE_PROD_URL))
+transit_dev_tests = TestGroup(application=Application.TRANSIT, name="Transit Dev", tests=generate_tests(BASE_DEV_URL))
+transit_prod_tests = TestGroup(
+    application=Application.TRANSIT, name="Transit Prod", tests=generate_tests(BASE_PROD_URL)
+)

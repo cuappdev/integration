@@ -1,16 +1,11 @@
 from os import environ
+from urllib import parse
 
-from models import Request, Test, TestGroup
+from models import Application, Request, Test, TestGroup
 
 BASE_URL = environ["EATERY_BACKEND_URL"]
+URL_PARAMS = "?query=" + parse.quote("query { eateries { name } }")  # url encoding
 
-tests = [
-    Test(
-        name="Eateries on Campus query",
-        request=Request(
-            method="GET", url=BASE_URL + "?query=query%7Beateries%20%7Bname%7D%7D"
-        ),
-    )
-]
+tests = [Test(name="Eateries on Campus query", request=Request(method="GET", url=BASE_URL + URL_PARAMS))]
 
-eatery_tests = TestGroup(name="Eatery", tests=tests)
+eatery_tests = TestGroup(application=Application.EATERY, name="Eatery", tests=tests)
