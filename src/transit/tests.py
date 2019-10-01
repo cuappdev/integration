@@ -1,7 +1,7 @@
 import time
 from os import environ
 
-from models import Pod, Request, Test, TestGroup
+from models import Application, Request, Test, TestGroup
 
 BASE_DEV_URL = environ["TRANSIT_DEV_BACKEND_URL"]
 BASE_PROD_URL = environ["TRANSIT_BACKEND_URL"]
@@ -169,5 +169,7 @@ def generate_tests(base_url):
     ]
 
 
-transit_dev_tests = TestGroup(name="Transit Dev", pod=Pod.TRANSIT, tests=generate_tests(BASE_DEV_URL))
-transit_prod_tests = TestGroup(name="Transit Prod", pod=Pod.TRANSIT, tests=generate_tests(BASE_PROD_URL))
+transit_dev_tests = TestGroup(application=Application.TRANSIT, name="Transit Dev", tests=generate_tests(BASE_DEV_URL))
+transit_prod_tests = TestGroup(
+    application=Application.TRANSIT, name="Transit Prod", tests=generate_tests(BASE_PROD_URL)
+)

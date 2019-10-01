@@ -2,7 +2,7 @@ from datetime import datetime
 from os import environ
 from subprocess import call
 import sys
-from models import Pod, Result
+from models import Application, Result
 
 # Add more test directories here...
 from coursegrab import coursegrab_tests
@@ -20,7 +20,7 @@ FAILURE_STATUS = "FAILURE"
 
 num_tests = sum([len(test_group.tests) for test_group in test_groups])
 num_failures = 0
-pod_error_tracking = {Pod.EATERY: False, Pod.TRANSIT: False, Pod.UPLIFT: False}
+application_error_tracking = {Application.EATERY: False, Application.TRANSIT: False, Application.UPLIFT: False}
 
 slack_message_text = "*Starting new test run...*\n"
 
@@ -37,7 +37,7 @@ for test_group in test_groups:
         if test_result != Result.SUCCESS:
             test_group_failures += 1
             # Mark that there is an error in this pod
-            pod_error_tracking[test_group.pod] = True
+            application_error_tracking[test_group.application] = True
         test_group_text += "[{}] - {}\n".format(test.name, test_result.name)
 
     # Only print output if there was more than 0 failures in the group
@@ -50,11 +50,11 @@ if num_failures:
     slack_message_text += "\t*Summary: `{}/{}` tests passed!* ".format(passed_tests, num_tests)
     # Tag appropriate users
     user_ids = environ["ADMIN_SLACK_USER_IDS"]
-    if pod_error_tracking[Pod.EATERY]:
+    if application_error_tracking[Application.EATERY]:
         user_ids += ", " + environ["EATERY_SLACK_USER_IDS"]
-    if pod_error_tracking[Pod.TRANSIT]:
+    if application_error_tracking[Application.TRANSIT]:
         user_ids += ", " + environ["TRANSIT_SLACK_USER_IDS"]
-    if pod_error_tracking[Pod.UPLIFT]:
+    if application_error_tracking[Application.UPLIFT]:
         user_ids += ", " + environ["UPLIFT_SLACK_USER_IDS"]
     slack_message_text += "cc {}!".format(user_ids)
 else:

@@ -8,8 +8,8 @@ class TestGroup:
     """
 
     def __init__(self, **kwargs):
+        self.application = kwargs["application"]
         self.name = kwargs["name"]
-        self.pod = kwargs["pod"]
         self.tests = kwargs["tests"]
 
 
@@ -43,9 +43,9 @@ class Result(Enum):
     TIMEOUT = auto()
 
 
-class Pod(Enum):
+class Application(Enum):
     """
-    Pod defines which pod a test group belongs to.
+    Application defines which application a test group belongs to.
     """
 
     EATERY = auto()
