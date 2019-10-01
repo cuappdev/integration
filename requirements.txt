@@ -5,6 +5,7 @@ certifi==2019.6.16
 chardet==3.0.4
 Click==7.0
 idna==2.8
+pre-commit==1.18.3
 requests==2.22.0
 toml==0.10.0
 urllib3==1.25.3
