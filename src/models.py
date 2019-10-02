@@ -11,6 +11,7 @@ class TestGroup:
         self.application = kwargs["application"]
         self.name = kwargs["name"]
         self.tests = kwargs["tests"]
+        self.slack_message = SlackMessage(text="")
 
 
 class Request:
@@ -80,3 +81,14 @@ class Test:
             return Result.TIMEOUT
         except requests.exceptions.RequestException:
             return Result.ERROR
+
+
+class SlackMessage:
+    """
+    SlackMessage defines a slack message object which contains information on whether a
+    message should send and the contents of the message.
+    """
+
+    def __init__(self, **kwargs):
+        self.text = kwargs["text"]
+        self.should_send = False
