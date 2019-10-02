@@ -10,8 +10,8 @@ class TestGroup:
     def __init__(self, **kwargs):
         self.application = kwargs["application"]
         self.name = kwargs["name"]
-        self.tests = kwargs["tests"]
         self.slack_message = SlackMessage(text="")
+        self.tests = kwargs["tests"]
 
 
 class Request:

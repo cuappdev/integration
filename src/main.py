@@ -22,17 +22,17 @@ application_userID_mapping = {
     Application.TRANSIT: environ["TRANSIT_SLACK_USER_IDS"],
     Application.UPLIFT: environ["UPLIFT_SLACK_USER_IDS"],
 }
-application_slackhook_mapping = {
+application_slack_hook_mapping = {
+    Application.COURSEGRAB: environ["SLACK_HOOK_COURSEGRAB_URL"],
     Application.EATERY: environ["SLACK_HOOK_EATERY_URL"],
     Application.TRANSIT: environ["SLACK_HOOK_TRANSIT_URL"],
     Application.UPLIFT: environ["SLACK_HOOK_UPLIFT_URL"],
-    Application.COURSEGRAB: environ["SLACK_HOOK_COURSEGRAB_URL"],
 }
 
 for test_group in test_groups:
     slack_message_text = "\tRunning tests for {}...\n".format(test_group.name)
     test_group_failures = 0
-    num_test_group_test = len(test_group.tests)
+    num_test_group_tests = len(test_group.tests)
 
     for test in test_group.tests:
         test_status = SUCCESS_STATUS  # default to printing success
@@ -44,15 +44,15 @@ for test_group in test_groups:
         slack_message_text += "[{}] - {}\n".format(test.name, test_result.name)
 
     if test_group_failures:
-        passed_tests = num_test_group_test - test_group_failures
-        slack_message_text += "\t*Summary: `{}/{}` tests passed!* ".format(passed_tests, num_test_group_test)
+        passed_tests = num_test_group_tests - test_group_failures
+        slack_message_text += "\t*Summary: `{}/{}` tests passed!* ".format(passed_tests, num_test_group_tests)
         # Tag appropriate users
         user_ids = environ["ADMIN_SLACK_USER_IDS"]
         if test_group.application in application_userID_mapping:
             user_ids += ", " + application_userID_mapping[test_group.application]
         slack_message_text += "cc {}!".format(user_ids)
     else:
-        slack_message_text = "*`{0}/{0}` tests passed :white_check_mark:*".format(num_test_group_test)
+        slack_message_text = "*`{0}/{0}` tests passed :white_check_mark:*".format(num_test_group_tests)
     test_group.slack_message.text = slack_message_text
 
     # Always print output for debugging purposes
@@ -70,4 +70,4 @@ for test_group in test_groups:
     # Suppress output, this behavior can be changed in the future!
     if test_group.slack_message.should_send:
         CURL_BODY = """'{{ "text": "{}" }}' """.format(test_group.slack_message.text)
-        call(CURL_PREFIX + CURL_BODY + application_slackhook_mapping[test_group.application], shell=True)
+        call(CURL_PREFIX + CURL_BODY + application_slack_hook_mapping[test_group.application], shell=True)
