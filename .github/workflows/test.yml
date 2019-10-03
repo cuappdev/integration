@@ -17,8 +17,14 @@ jobs:
       run: python3.6 -m venv venv; source venv/bin/activate; pip install -r requirements.txt
     - name: Run main.py
       env:
-        SLACK_HOOK_URL: ${{ secrets.SLACK_HOOK_URL }}
-        SLACK_USER_IDS: ${{ secrets.SLACK_USER_IDS }}
+        SLACK_HOOK_COURSEGRAB_URL: ${{ secrets.SLACK_HOOK_COURSEGRAB_URL }}
+        SLACK_HOOK_EATERY_URL: ${{ secrets.SLACK_HOOK_EATERY_URL }}
+        SLACK_HOOK_TRANSIT_URL: ${{ secrets.SLACK_HOOK_TRANSIT_URL }}
+        SLACK_HOOK_UPLIFT_URL: ${{ secrets.SLACK_HOOK_UPLIFT_URL }}
+        ADMIN_SLACK_USER_IDS: ${{ secrets.ADMIN_SLACK_USER_IDS }}
+        EATERY_SLACK_USER_IDS: ${{ secrets.EATERY_SLACK_USER_IDS }}
+        TRANSIT_SLACK_USER_IDS: ${{ secrets.TRANSIT_SLACK_USER_IDS }}
+        UPLIFT_SLACK_USER_IDS: ${{ secrets.UPLIFT_SLACK_USER_IDS }}
         EATERY_BACKEND_URL: ${{ secrets.EATERY_BACKEND_URL }}
         TRANSIT_BACKEND_URL: ${{ secrets.TRANSIT_BACKEND_URL }}
         TRANSIT_DEV_BACKEND_URL: ${{ secrets.TRANSIT_DEV_BACKEND_URL }}
