@@ -1,4 +1,3 @@
-from datetime import datetime
 from os import environ
 from subprocess import call
 import sys
@@ -18,50 +17,46 @@ test_groups = [coursegrab_tests, eatery_tests, transit_dev_tests, transit_prod_t
 SUCCESS_STATUS = "SUCCESS"
 FAILURE_STATUS = "FAILURE"
 
-num_tests = sum([len(test_group.tests) for test_group in test_groups])
-num_failures = 0
-application_error_tracking = {Application.EATERY: False, Application.TRANSIT: False, Application.UPLIFT: False}
-
-slack_message_text = "*Starting new test run...*\n"
+application_user_id_mapping = {
+    Application.EATERY: environ["EATERY_SLACK_USER_IDS"],
+    Application.TRANSIT: environ["TRANSIT_SLACK_USER_IDS"],
+    Application.UPLIFT: environ["UPLIFT_SLACK_USER_IDS"],
+}
+application_slack_hook_mapping = {
+    Application.COURSEGRAB: environ["SLACK_HOOK_COURSEGRAB_URL"],
+    Application.EATERY: environ["SLACK_HOOK_EATERY_URL"],
+    Application.TRANSIT: environ["SLACK_HOOK_TRANSIT_URL"],
+    Application.UPLIFT: environ["SLACK_HOOK_UPLIFT_URL"],
+}
 
 for test_group in test_groups:
-    slack_message_text += "\tRunning tests for {}...\n".format(test_group.name)
-
-    test_group_text = ""
+    slack_message_text = "\tRunning tests for {}...\n".format(test_group.name)
     test_group_failures = 0
+    num_test_group_tests = len(test_group.tests)
 
     for test in test_group.tests:
         test_status = SUCCESS_STATUS  # default to printing success
-
         test_result = test.get_result()
         if test_result != Result.SUCCESS:
             test_group_failures += 1
             # Mark that there is an error in this pod
-            application_error_tracking[test_group.application] = True
-        test_group_text += "[{}] - {}\n".format(test.name, test_result.name)
+            test_group.slack_message.should_send = True
+        slack_message_text += "[{}] - {}\n".format(test.name, test_result.name)
 
-    # Only print output if there was more than 0 failures in the group
-    if test_group_failures != 0:
-        num_failures += test_group_failures
-        slack_message_text += "> ```\n{}```\n".format(test_group_text)
+    if test_group_failures:
+        passed_tests = num_test_group_tests - test_group_failures
+        slack_message_text += "\t*Summary: `{}/{}` tests passed!* ".format(passed_tests, num_test_group_tests)
+        # Tag appropriate users
+        user_ids = environ["ADMIN_SLACK_USER_IDS"]
+        if test_group.application in application_user_id_mapping:
+            user_ids += ", " + application_user_id_mapping[test_group.application]
+        slack_message_text += "cc {}!".format(user_ids)
+    else:
+        slack_message_text = "*`{0}/{0}` tests passed :white_check_mark:*".format(num_test_group_tests)
+    test_group.slack_message.text = slack_message_text
 
-if num_failures:
-    passed_tests = num_tests - num_failures
-    slack_message_text += "\t*Summary: `{}/{}` tests passed!* ".format(passed_tests, num_tests)
-    # Tag appropriate users
-    user_ids = environ["ADMIN_SLACK_USER_IDS"]
-    if application_error_tracking[Application.EATERY]:
-        user_ids += ", " + environ["EATERY_SLACK_USER_IDS"]
-    if application_error_tracking[Application.TRANSIT]:
-        user_ids += ", " + environ["TRANSIT_SLACK_USER_IDS"]
-    if application_error_tracking[Application.UPLIFT]:
-        user_ids += ", " + environ["UPLIFT_SLACK_USER_IDS"]
-    slack_message_text += "cc {}!".format(user_ids)
-else:
-    slack_message_text = "*`{0}/{0}` tests passed :white_check_mark:*".format(num_tests)
-
-# Always print output for debugging purposes
-print(slack_message_text)
+    # Always print output for debugging purposes
+    print(test_group.slack_message.text)
 
 # Send output to server if necessary
 if len(sys.argv) == 2:
@@ -70,8 +65,9 @@ if len(sys.argv) == 2:
     else:
         print("Unsupported operation, exiting...\n")
 
-if num_failures:
+CURL_PREFIX = """curl -X POST -H 'Content-type: application/json' --data """
+for test_group in test_groups:
     # Suppress output, this behavior can be changed in the future!
-    CURL_PREFIX = """curl -X POST -H 'Content-type: application/json' --data """
-    CURL_BODY = """'{{ "text": "{}" }}' """.format(slack_message_text)
-    call(CURL_PREFIX + CURL_BODY + environ["SLACK_HOOK_URL"], shell=True)
+    if test_group.slack_message.should_send:
+        CURL_BODY = """'{{ "text": "{}" }}' """.format(test_group.slack_message.text)
+        call(CURL_PREFIX + CURL_BODY + application_slack_hook_mapping[test_group.application], shell=True)

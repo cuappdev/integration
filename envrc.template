@@ -1,9 +1,14 @@
-export SLACK_HOOK_URL=""
 # It's important that the following env var is formatted exactly as follows!
 export ADMIN_SLACK_USER_IDS="<@U1>, <@U2>"
 export EATERY_SLACK_USER_IDS="<@U1>, <@U2>"
 export TRANSIT_SLACK_USER_IDS="<@U1>, <@U2>"
 export UPLIFT_SLACK_USER_IDS="<@U1>, <@U2>"
+
+# slack_hook_urls
+export SLACK_HOOK_COURSEGRAB_URL=""
+export SLACK_HOOK_EATERY_URL=""
+export SLACK_HOOK_TRANSIT_URL=""
+export SLACK_HOOK_UPLIFT_URL=""
 
 # backend_urls
 export EATERY_BACKEND_URL=""
