@@ -17,7 +17,7 @@ test_groups = [coursegrab_tests, eatery_tests, transit_dev_tests, transit_prod_t
 SUCCESS_STATUS = "SUCCESS"
 FAILURE_STATUS = "FAILURE"
 
-application_userID_mapping = {
+application_user_id_mapping = {
     Application.EATERY: environ["EATERY_SLACK_USER_IDS"],
     Application.TRANSIT: environ["TRANSIT_SLACK_USER_IDS"],
     Application.UPLIFT: environ["UPLIFT_SLACK_USER_IDS"],
@@ -48,8 +48,8 @@ for test_group in test_groups:
         slack_message_text += "\t*Summary: `{}/{}` tests passed!* ".format(passed_tests, num_test_group_tests)
         # Tag appropriate users
         user_ids = environ["ADMIN_SLACK_USER_IDS"]
-        if test_group.application in application_userID_mapping:
-            user_ids += ", " + application_userID_mapping[test_group.application]
+        if test_group.application in application_user_id_mapping:
+            user_ids += ", " + application_user_id_mapping[test_group.application]
         slack_message_text += "cc {}!".format(user_ids)
     else:
         slack_message_text = "*`{0}/{0}` tests passed :white_check_mark:*".format(num_test_group_tests)
