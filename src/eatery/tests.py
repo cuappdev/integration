@@ -10,18 +10,17 @@ URL_PARAMS_CAMPUS_NON_EMPTY = "?query=" + parse.quote(  # url encoding
     """{
   campusEateries {
     about
-    name
-    nameShort
+    campusArea{
+      descriptionShort
+    }
     coordinates {
       latitude
       longitude
     }
     location
+    name
+    nameShort
     paymentMethodsEnums
-    campusArea{
-      descriptionShort
-    }
-    location
     slug
   }
 }
@@ -30,19 +29,19 @@ URL_PARAMS_CAMPUS_NON_EMPTY = "?query=" + parse.quote(  # url encoding
 URL_PARAMS_COLLEGETOWN_NON_EMPTY = "?query=" + parse.quote(  # url encoding
     """{
   collegetownEateries {
-    id
-    name
+    address
+    categories
     coordinates {
       latitude
       longitude
     }
     eateryType
+    id
+    name
     paymentMethodsEnums
     phone
-    address
-    categories
     price
-		ratingEnum
+    ratingEnum
     url
   }
 }
@@ -52,22 +51,12 @@ URL_PARAMS_COLLEGETOWN_NON_EMPTY = "?query=" + parse.quote(  # url encoding
 
 def all_campus_fields_non_empty(r):
     response = r.json()
-    campust_eateries = response["data"]["campusEateries"]
-    # Iterate over fields
-    for field in campust_eateries:
-        if field is None:
-            return False
-    return True
+    return all(response["data"]["campusEateries"])
 
 
 def all_collegetown_fields_non_empty(r):
     response = r.json()
-    campust_eateries = response["data"]["collegetownEateries"]
-    # Iterate over fields
-    for field in campust_eateries:
-        if field is None:
-            return False
-    return True
+    return all(response["data"]["collegetownEateries"])
 
 
 tests = [
