@@ -3,9 +3,10 @@ from urllib import parse
 
 from models import Application, Request, Test, TestGroup
 
+
 BASE_URL = environ["EATERY_BACKEND_URL"]
-URL_PARAMS1 = "?query=" + parse.quote("query { eateries { name } }")  # url encoding
-URL_PARAMS2 = "?query=" + parse.quote(
+URL_PARAMS_BASIC = "?query=" + parse.quote("query { eateries { name } }")  # url encoding
+URL_PARAMS_CAMPUS_NON_EMPTY = "?query=" + parse.quote(
     """{
   campusEateries {
     about
@@ -26,25 +27,60 @@ URL_PARAMS2 = "?query=" + parse.quote(
 }
 """
 )
+URL_PARAMS_COLLEGETOWN_NON_EMPTY = "?query=" + parse.quote(
+    """{
+  collegetownEateries {
+    id
+    name
+    coordinates {
+      latitude
+      longitude
+    }
+    eateryType
+    paymentMethodsEnums
+    phone
+    address
+    categories
+    price
+		ratingEnum
+    url
+  }
+}
+"""
+)
 
 
-# We want to verify that /allstops returns a list of type 'busStop' only
-def All_Fields_Non_Empty(r):
+def all_campus_fields_non_empty(r):
     response = r.json()
-    # Iterate over stops
     campust_eateries = response["data"]["campusEateries"]
+    # Iterate over fields
     for field in campust_eateries:
-        if not (field is None):
+        if field is None:
+            return False
+    return True
+
+
+def all_collegetown_fields_non_empty(r):
+    response = r.json()
+    campust_eateries = response["data"]["collegetownEateries"]
+    # Iterate over fields
+    for field in campust_eateries:
+        if field is None:
             return False
     return True
 
 
 tests = [
-    Test(name="Eateries on campus query", request=Request(method="GET", url=BASE_URL + URL_PARAMS1)),
+    Test(name="Eateries on campus query", request=Request(method="GET", url=BASE_URL + URL_PARAMS_BASIC)),
     Test(
-        name="Fields that should never be empty query",
-        request=Request(method="GET", url=BASE_URL + URL_PARAMS2),
-        callback=All_Fields_Non_Empty,
+        name="Fields that should never be empty for campus eateries query",
+        request=Request(method="GET", url=BASE_URL + URL_PARAMS_CAMPUS_NON_EMPTY),
+        callback=all_campus_fields_non_empty,
+    ),
+    Test(
+        name="Fields that should never be empty for collegetown eateries query",
+        request=Request(method="GET", url=BASE_URL + URL_PARAMS_COLLEGETOWN_NON_EMPTY),
+        callback=all_collegetown_fields_non_empty,
     ),
 ]
 

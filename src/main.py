@@ -29,6 +29,7 @@ application_slack_hook_mapping = {
     Application.UPLIFT: environ["SLACK_HOOK_UPLIFT_URL"],
 }
 
+
 for test_group in test_groups:
     slack_message_text = "\tRunning tests for {}...\n".format(test_group.name)
     test_group_failures = 0
