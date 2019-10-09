@@ -6,7 +6,7 @@ from models import Application, Request, Test, TestGroup
 
 BASE_URL = environ["EATERY_BACKEND_URL"]
 URL_PARAMS_BASIC = "?query=" + parse.quote("query { eateries { name } }")  # url encoding
-URL_PARAMS_CAMPUS_NON_EMPTY = "?query=" + parse.quote(
+URL_PARAMS_CAMPUS_NON_EMPTY = "?query=" + parse.quote(  # url encoding
     """{
   campusEateries {
     about
@@ -27,7 +27,7 @@ URL_PARAMS_CAMPUS_NON_EMPTY = "?query=" + parse.quote(
 }
 """
 )
-URL_PARAMS_COLLEGETOWN_NON_EMPTY = "?query=" + parse.quote(
+URL_PARAMS_COLLEGETOWN_NON_EMPTY = "?query=" + parse.quote(  # url encoding
     """{
   collegetownEateries {
     id
