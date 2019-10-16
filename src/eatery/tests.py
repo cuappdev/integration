@@ -10,7 +10,7 @@ URL_PARAMS_CAMPUS_NON_EMPTY = "?query=" + parse.quote(  # url encoding
     """{
   campusEateries {
     about
-    campusArea{
+    campusArea {
       descriptionShort
     }
     coordinates {
