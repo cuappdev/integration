@@ -46,7 +46,7 @@ def route_number_non_null_callback(r):
     for route_directions in response["data"]["boardingSoon"]:
         for direction in route_directions["directions"]:
             # Walking directions can have a [None] routeNumber
-            if direction["type"] != "walk" and "routeNumber" is None:
+            if direction["type"] != "walk" and direction["routeNumber"] is None:
                 return False
 
     return True
