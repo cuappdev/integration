@@ -1,11 +1,13 @@
 import time
 from os import environ
 
+from datetime import datetime
 from models import Application, Request, Test, TestGroup
 
 BASE_DEV_URL = environ["TRANSIT_DEV_BACKEND_URL"]
 BASE_PROD_URL = environ["TRANSIT_BACKEND_URL"]
 
+GTFS_EXPIRATION_BUFFER = 7  # number of days before GTFS feed expiration date
 
 # We want to verify that /allstops returns a list of type 'busStop' only
 def allstops_returns_bus_stops(r):
@@ -32,6 +34,21 @@ def at_least_one_walking_route(r):
     # Verify list of walking directions is not empty
     walking_directions = response["data"]["walking"]
     return walking_directions is not None or len(walking_directions) > 0
+
+
+def check_gtfs_feed_expiration(r):
+    response = r.json()
+    # Make sure response was successful
+    if not response["success"]:
+        return False
+
+    end_date = datetime.strptime(response["data"]["feed_end_date"], "%Y%m%d")
+    today = datetime.today()
+
+    if today < end_date:
+        return (end_date - today).days > GTFS_EXPIRATION_BUFFER
+
+    return False
 
 
 # We want to verify that route numbers are non-null, or that they will not show up as
@@ -165,6 +182,11 @@ def generate_tests(base_url):
                 },
             ),
             callback=at_least_one_walking_route,
+        ),
+        Test(
+            name="Checking GTFS feed expiration date",
+            request=Request(method="GET", url=base_url + "api/v1/GTFSFeedInfo/"),
+            callback=check_gtfs_feed_expiration,
         ),
     ]
 
