@@ -29,13 +29,13 @@ URL_PARAMS_GYMS_NON_EMPTY = "?query=" + parse.quote(  # url encoding
 URL_PARAMS_CLASSES_NON_EMPTY = "?query=" + parse.quote(  # url encoding
     """
     query ClassesInfoQuery {
-          classes {
+        classes {
             date
             endTime
             isCancelled
             startTime
-          }
         }
+    }
         """
 )
 
