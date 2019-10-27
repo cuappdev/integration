@@ -34,6 +34,7 @@ for test_group in test_groups:
     test_group_failures = 0
     num_test_group_tests = len(test_group.tests)
 
+    diagnostic_text = ""
     for test in test_group.tests:
         test_status = SUCCESS_STATUS  # default to printing success
         test_result = test.get_result()
@@ -41,7 +42,8 @@ for test_group in test_groups:
             test_group_failures += 1
             # Mark that there is an error in this pod
             test_group.slack_message.should_send = True
-        slack_message_text += "[{}] - {}\n".format(test.name, test_result.name)
+        diagnostic_text += "[{}] - {}\n".format(test.name, test_result.name)
+    slack_message_text += "> ```\n{}```\n".format(diagnostic_text)
 
     if test_group_failures:
         passed_tests = num_test_group_tests - test_group_failures
