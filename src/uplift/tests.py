@@ -10,18 +10,26 @@ URL_PARAMS_GYMS_NON_EMPTY = "?query=" + parse.quote(  # url encoding
     query GymsQuery {
         gyms {
             facilities {
-                equipment {
-                    name
-                }
                 name
-                times {
-                    day
-                    endTime
-                    startTime
-                    restrictions
+                details {
+                    detailsType
+                    equipment {
+                        name
+                    }
+                    items
+                    phoneNumbers
+                    prices
+                    subFacilityNames
+                    times {
+                        day
+                        timeRanges {
+                            startTime
+                            endTime
+                            restrictions
+                        }
+                    }
                 }
             }
-            name
         }
     }
     """
