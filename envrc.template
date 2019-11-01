@@ -13,4 +13,5 @@ export SLACK_HOOK_UPLIFT_URL=""
 # backend_urls
 export EATERY_BACKEND_URL=""
 export TRANSIT_BACKEND_URL=""
+export TRANSIT_DEV_BACKEND_URL=""
 export UPLIFT_BACKEND_URL=""
