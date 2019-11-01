@@ -17,7 +17,6 @@ URL_PARAMS_GYMS_NON_EMPTY = "?query=" + parse.quote(  # url encoding
                         name
                     }
                     items
-                    phoneNumbers
                     prices
                     subFacilityNames
                     times {
