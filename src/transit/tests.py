@@ -183,11 +183,6 @@ def generate_tests(base_url):
             ),
             callback=at_least_one_walking_route,
         ),
-        Test(
-            name="Checking GTFS feed expiration date",
-            request=Request(method="GET", url=base_url + "api/v1/GTFSFeedInfo/"),
-            callback=check_gtfs_feed_expiration,
-        ),
     ]
 
 
