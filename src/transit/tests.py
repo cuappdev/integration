@@ -97,7 +97,7 @@ def search_returns_suggestions(r):
     # Iterate over search suggestions
     for suggestion in response["data"]:
         # Check that we do not get the "Cannot filter property null" error
-        if "type" not in suggestion or suggestion["type"] not in ["googlePlace", "busStop"]:
+        if "type" not in suggestion or suggestion["type"] not in ["applePlace", "busStop"]:
             return False
     return True
 
