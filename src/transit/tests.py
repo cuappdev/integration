@@ -159,7 +159,7 @@ def generate_tests(base_url):
             callback=no_walking_routes_in_boarding_soon,
         ),
         Test(
-            name="api/v1/search contains googlePlaces and busStops",
+            name="api/v1/search contains applePlaces and busStops",
             request=Request(method="POST", url=base_url + "api/v2/search/", payload={"query": "st"}),
             callback=search_returns_suggestions,
         ),
