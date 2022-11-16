@@ -8,9 +8,10 @@ from coursegrab import coursegrab_tests
 from eatery import eatery_tests
 from transit import transit_dev_tests, transit_prod_tests
 from uplift import uplift_tests
+from volume import volume_tests
 
 # And add the test group here as well!
-test_groups = [coursegrab_tests, eatery_tests, transit_dev_tests, transit_prod_tests, uplift_tests]
+test_groups = [coursegrab_tests, eatery_tests, transit_dev_tests, transit_prod_tests, uplift_tests, volume_tests]
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  APPLICATION CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -21,12 +22,14 @@ application_user_id_mapping = {
     Application.EATERY: environ["EATERY_SLACK_USER_IDS"],
     Application.TRANSIT: environ["TRANSIT_SLACK_USER_IDS"],
     Application.UPLIFT: environ["UPLIFT_SLACK_USER_IDS"],
+    Application.VOLUME: environ["VOLUME_SLACK_USER_IDS"],
 }
 application_slack_hook_mapping = {
     Application.COURSEGRAB: environ["SLACK_HOOK_COURSEGRAB_URL"],
     Application.EATERY: environ["SLACK_HOOK_EATERY_URL"],
     Application.TRANSIT: environ["SLACK_HOOK_TRANSIT_URL"],
     Application.UPLIFT: environ["SLACK_HOOK_UPLIFT_URL"],
+    Application.VOLUME: environ["SLACK_HOOK_VOLUME_URL"],
 }
 
 for test_group in test_groups:

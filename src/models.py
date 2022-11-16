@@ -53,6 +53,7 @@ class Application(Enum):
     TRANSIT = auto()
     UPLIFT = auto()
     COURSEGRAB = auto()
+    VOLUME = auto()
 
 
 class Test:
