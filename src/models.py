@@ -92,4 +92,4 @@ class SlackMessage:
 
     def __init__(self, **kwargs):
         self.text = kwargs["text"]
-        self.should_send = False
+        self.should_send = True
