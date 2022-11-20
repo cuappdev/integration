@@ -9,7 +9,7 @@ from eatery import eatery_tests
 from transit import transit_dev_tests, transit_prod_tests
 from volume import volume_tests
 
-test_groups = [volume_tests]
+test_groups = [coursegrab_tests,eatery_tests,transit_dev_tests,transit_prod_tests,volume_tests]
 test_config = []
 local_only = False 
 default_config=[]
