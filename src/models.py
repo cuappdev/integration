@@ -1,4 +1,5 @@
 from enum import Enum, auto
+import json
 import requests
 
 
@@ -53,6 +54,7 @@ class Application(Enum):
     TRANSIT = auto()
     UPLIFT = auto()
     COURSEGRAB = auto()
+    VOLUME = auto()
 
 
 class Test:
@@ -91,4 +93,39 @@ class SlackMessage:
 
     def __init__(self, **kwargs):
         self.text = kwargs["text"]
-        self.should_send = False
+        self.should_send = True
+
+
+class Config:
+    """
+    Config defines a configuration for each tested app containing whether the app tests
+    are <ON>, <OFF>, or <FAILED>. Note: In main.py, apps that are mapped to <FAILED> will be
+    tested but will not ping slack users. If the tests succeed, then the app will
+    be mapped to <ON>.
+    """
+
+    SETTINGS = ["ON", "OFF", "FAILED"]
+
+    def __init__(self, config_json):
+        self._config = config_json
+
+    @classmethod
+    def create_default_config(cls, test_groups):
+        default_json = {app.name: "ON" for app in test_groups}
+        return cls(default_json)
+
+    def __len__(self):
+        return len(self._config)
+
+    def __str__(self):
+        return json.dumps(self._config)
+
+    def get(self, app_name):
+        return self._config.get(app_name)
+
+    def set(self, app_name, setting):
+        if setting in self.SETTINGS and app_name in self._config.keys():
+            self._config[app_name] = setting
+            return True
+        else:
+            return False

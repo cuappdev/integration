@@ -2,33 +2,36 @@ name: post-results
 
 on:
   schedule:
-  - cron: '*/10 * * * *'
+    - cron: "0 */6 * * *"
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
-    - name: Setup Python
-      uses: actions/setup-python@v1
-      with:
-        python-version: '3.6'
-        architecture: 'x64'
-    - name: Install dependencies
-      run: python3.6 -m venv venv; source venv/bin/activate; pip install -r requirements.txt
-    - name: Run main.py
-      env:
-        SLACK_HOOK_COURSEGRAB_URL: ${{ secrets.SLACK_HOOK_COURSEGRAB_URL }}
-        SLACK_HOOK_EATERY_URL: ${{ secrets.SLACK_HOOK_EATERY_URL }}
-        SLACK_HOOK_TRANSIT_URL: ${{ secrets.SLACK_HOOK_TRANSIT_URL }}
-        SLACK_HOOK_UPLIFT_URL: ${{ secrets.SLACK_HOOK_UPLIFT_URL }}
-        ADMIN_SLACK_USER_IDS: ${{ secrets.ADMIN_SLACK_USER_IDS }}
-        EATERY_SLACK_USER_IDS: ${{ secrets.EATERY_SLACK_USER_IDS }}
-        TRANSIT_SLACK_USER_IDS: ${{ secrets.TRANSIT_SLACK_USER_IDS }}
-        UPLIFT_SLACK_USER_IDS: ${{ secrets.UPLIFT_SLACK_USER_IDS }}
-        EATERY_BACKEND_URL: ${{ secrets.EATERY_BACKEND_URL }}
-        TRANSIT_BACKEND_URL: ${{ secrets.TRANSIT_BACKEND_URL }}
-        TRANSIT_DEV_BACKEND_URL: ${{ secrets.TRANSIT_DEV_BACKEND_URL }}
-        UPLIFT_BACKEND_URL: ${{ secrets.UPLIFT_BACKEND_URL }}
-      run: source venv/bin/activate; python src/main.py
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.10"
+          architecture: "x64"
+      - name: Install dependencies
+        run: python3.10 -m venv venv; source venv/bin/activate; pip install -r requirements.txt
+      - name: Run main.py
+        env:
+          SLACK_HOOK_COURSEGRAB_URL: ${{ secrets.SLACK_HOOK_COURSEGRAB_URL }}
+          SLACK_HOOK_EATERY_URL: ${{ secrets.SLACK_HOOK_EATERY_URL }}
+          SLACK_HOOK_TRANSIT_URL: ${{ secrets.SLACK_HOOK_TRANSIT_URL }}
+          SLACK_HOOK_UPLIFT_URL: ${{ secrets.SLACK_HOOK_UPLIFT_URL }}
+          SLACK_HOOK_VOLUME_URL: ${{ secrets.SLACK_HOOK_VOLUME_URL }}
+          ADMIN_SLACK_USER_IDS: ${{ secrets.ADMIN_SLACK_USER_IDS }}
+          EATERY_SLACK_USER_IDS: ${{ secrets.EATERY_SLACK_USER_IDS }}
+          TRANSIT_SLACK_USER_IDS: ${{ secrets.TRANSIT_SLACK_USER_IDS }}
+          UPLIFT_SLACK_USER_IDS: ${{ secrets.UPLIFT_SLACK_USER_IDS }}
+          VOLUME_SLACK_USER_IDS: ${{ secrets.VOLUME_SLACK_USER_IDS }}
+          EATERY_BACKEND_URL: ${{ secrets.EATERY_BACKEND_URL }}
+          TRANSIT_BACKEND_URL: ${{ secrets.TRANSIT_BACKEND_URL }}
+          TRANSIT_DEV_BACKEND_URL: ${{ secrets.TRANSIT_DEV_BACKEND_URL }}
+          UPLIFT_BACKEND_URL: ${{ secrets.UPLIFT_BACKEND_URL }}
+          VOLUME_BACKEND_URL: ${{ secrets.VOLUME_BACKEND_URL }}
+        run: source venv/bin/activate; python src/main.py
