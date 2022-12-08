@@ -5,71 +5,71 @@ from models import Application, Request, Test, TestGroup
 
 
 BASE_URL = environ["VOLUME_BACKEND_URL"]
-URL_PARAMS_ARTICLES = "?query=" + parse.quote("query {  getAllArticles{ id title publicationSlug } }")  # url encoding
+URL_PARAMS_ARTICLES = "?query=" + parse.quote("query {getAllArticles{ id title publicationSlug } }")  # url encoding
 URL_PARAMS_ARTICLES_NON_EMPTY = "?query=" + parse.quote(  # url encoding
     """ query {
-      getAllArticles{
+        getAllArticles{
+          id
+          articleURL
+          date
+          imageURL
+          publication{
+            bio
+            profileImageURL
+            rssName
+            slug
+            shoutouts
+            websiteURL
+            contentTypes
+          }
+          publicationSlug
+          shoutouts
+          title
+          nsfw
+          isTrending
+          trendiness
+        }
+      }
+      
+"""
+)
+URL_PARAMS_PUBLICATIONS_NON_EMPTY = "?query=" + parse.quote(  # url encoding
+    """query {
+      getAllPublications {
         id
-        articleURL
-        date
-        imageURL
-        publication{
-          bio
+        backgroundImageURL
+        bio
+        bioShort
         name
         profileImageURL
         rssName
         slug
         shoutouts
         websiteURL
-          contentTypes
+        contentTypes
+        mostRecentArticle {
+          title
         }
-        publicationSlug
-        shoutouts
-        title
-        nsfw
-        isTrending
-        trendiness
+        numArticles
+        socials {
+          URL
+          social
+        }
+        contentTypes
       }
     }
-"""
-)
-URL_PARAMS_PUBLICATIONS_NON_EMPTY = "?query=" + parse.quote(  # url encoding
-    """{
-  getAllPublications {
-    id
-    backgroundImageURL
-    bio
-    bioShort
-    name
-    profileImageURL
-    rssName
-    slug
-    shoutouts
-    websiteURL
-    contentTypes
-    mostRecentArticle {
-      title
-    }
-    numArticles
-    socials {
-      URL
-      social
-    }
-    contentTypes
-  }
-}
 """
 )
 
 
 def all_article_fields_non_empty(r):
     response = r.json()
-    return all(response["data"]["articles"])
+    return all(response["data"]["getAllArticles"])
 
 
 def all_publication_fields_non_empty(r):
     response = r.json()
-    return all(response["data"]["publications"])
+    return all(response["data"]["getAllPublications"])
 
 
 tests = [
