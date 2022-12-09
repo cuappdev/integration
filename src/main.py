@@ -25,7 +25,10 @@ match sys.argv[1:]:
         local_only=True
     case ["--use-config", *args]:
         with open('./src/test_config.json','r') as file:
-            j=file.read()
+            try:
+                j=environ["GITHUB_ENV"]
+            except:
+                j=file.read()
             test_config= Config(json.loads(j))
             if(len(test_config)!=len(test_groups)):
                 raise Exception("Invalid config length, length is currently "+ str(len(test_config))+", should be length: "+ str(len(test_groups)))
@@ -88,18 +91,19 @@ for test_group in test_groups:
             slack_message_text = "*`{0}/{0}` tests passed :white_check_mark:*".format(num_test_group_tests)
         test_group.slack_message.text = slack_message_text
         # Always print output for debugging purposes
-        print(test_group.slack_message.text)
+        # print(test_group.slack_message.text)
 
 f = open("./src/test_config.json", "w")
 f.write(str(test_config))
 f.close()
-
+print(str(test_config))
 
 # Send output to server if necessary
 if local_only:
     exit()
 
-CURL_PREFIX = """curl -X POST -H 'Content-type: application/json' --data """
+CURL_PREFIX = """curl -X POST -H 'Content-type: application/json' --silent --output /dev/null --data """
+
 for test_group in test_groups:
     if copy_config.get(test_group.name)=="ON" or test_config.get(test_group.name)=="ON": # Only output enabled test groups, which include newly failing ones
         # Suppress output, this behavior can be changed in the future!
