@@ -37,4 +37,4 @@ jobs:
           VOLUME_BACKEND_URL: ${{ secrets.VOLUME_BACKEND_URL }}
         run: source venv/bin/activate; python src/main.py --use-config {{ $GITHUB_ENV }} >> $GITHUB_ENV
       - name: Output config
-        run: echo "${{ env.AUTH_TOKEN }}"
+        run: echo "${{ $GITHUB_ENV }}"
