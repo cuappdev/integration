@@ -97,7 +97,7 @@ for test_group in test_groups:
 f = open("./src/test_config.json", "w")
 f.write(str(test_config))
 f.close()
-print(str(test_config))
+print("test_config="+str(test_config))
 
 # Send output to server if necessary
 if local_only:
