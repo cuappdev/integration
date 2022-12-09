@@ -26,10 +26,11 @@ match sys.argv[1:]:
     case ["--use-config", *args]:
         with open('./src/test_config.json','r') as file:
             try:
-                j=environ["GITHUB_ENV"]
+                j=json.loads(environ["GITHUB_ENV"])
+
             except:
-                j=file.read()
-            test_config= Config(json.loads(j))
+                j=json.loads(file.read())
+            test_config= Config(j)
             if(len(test_config)!=len(test_groups)):
                 raise Exception("Invalid config length, length is currently "+ str(len(test_config))+", should be length: "+ str(len(test_groups)))
             # test_config is a json of app names mapped to of "OFF", "ON", or "FAILED"
@@ -37,7 +38,7 @@ match sys.argv[1:]:
             # "ON" represents an enabled test_group
             # "FAILED" represents a test_group that has failed previously and is will have its output suppressed to prevent spam
             # Config values of "ON" and "FAILED" will be tested
-            copy_config=Config(json.loads(j))
+            copy_config=Config(j)
             if "--local-only" in args:
                 local_only=True
     case _:
