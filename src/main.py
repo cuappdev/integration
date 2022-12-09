@@ -26,7 +26,7 @@ match sys.argv[1:]:
     case ["--use-config", *args]:
         with open('./src/test_config.json','r') as file:
             try:
-                j=json.loads(environ["GITHUB_ENV"])
+                j=json.loads(environ["TEST_CONFIG"])
 
             except:
                 j=json.loads(file.read())
@@ -97,7 +97,7 @@ for test_group in test_groups:
 f = open("./src/test_config.json", "w")
 f.write(str(test_config))
 f.close()
-print("test_config="+str(test_config))
+print("TEST_CONFIG="+str(test_config))
 
 # Send output to server if necessary
 if local_only:
