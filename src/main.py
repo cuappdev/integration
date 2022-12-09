@@ -24,7 +24,7 @@ match sys.argv[1:]:
         test_config = default_config
         local_only=True
     case ["--use-config", *args]:
-        with open('./test_config.json','r') as file:
+        with open('./src/test_config.json','r') as file:
             j=file.read()
             test_config= Config(json.loads(j))
             if(len(test_config)!=len(test_groups)):
@@ -90,7 +90,7 @@ for test_group in test_groups:
         # Always print output for debugging purposes
         print(test_group.slack_message.text)
 
-f = open("./test_config.json", "w")
+f = open("./src/test_config.json", "w")
 f.write(str(test_config))
 f.close()
 
