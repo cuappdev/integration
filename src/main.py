@@ -103,7 +103,7 @@ print("TEST_CONFIG="+str(test_config))
 if local_only:
     exit()
 
-CURL_PREFIX = """curl -X POST -H 'Content-type: application/json' --silent --output /dev/null --data """
+CURL_PREFIX = """curl -X POST -H 'Content-type: application/json' -v --data """
 
 for test_group in test_groups:
     if copy_config.get(test_group.name)=="ON" or test_config.get(test_group.name)=="ON": # Only output enabled test groups, which include newly failing ones
