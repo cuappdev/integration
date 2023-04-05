@@ -18,6 +18,7 @@ test_config = None
 default_config=Config.create_default_config(test_groups)
 original_config = copy.deepcopy(default_config)
 local_only = False 
+locally_run = environ['LOCALLY_RUN']
 
 match sys.argv[1:]:
     case []:
@@ -26,23 +27,28 @@ match sys.argv[1:]:
         test_config = default_config
         local_only=True
     case ["--use-config", *args]:
-        with open('./src/test_config.json','r') as file:
+        if locally_run:
+            with open('./src/test_config.json','r') as file:
+                j=json.loads(file.read())
+                test_config= Config(j) 
+        else:
             try:
                 j=json.loads(environ["TEST_CONFIG"])
-
+                test_config= Config(j)
             except:
-                j=json.loads(file.read())
-            test_config= Config(j)
-            if(len(test_config)!=len(test_groups)):
-                raise Exception("Invalid config length, length is currently "+ str(len(test_config))+", should be length: "+ str(len(test_groups)))
-            # test_config is a json of app names mapped to of "OFF", "ON", or "FAILED"
-            # "OFF" represents a disabled test_group
-            # "ON" represents an enabled test_group
-            # "FAILED" represents a test_group that has failed previously and is will have its output suppressed to prevent spam
-            # Config values of "ON" and "FAILED" will be tested
-            original_config=copy.deepcopy(test_config)
-            if "--local-only" in args:
-                local_only=True
+                test_config= default_config
+
+        if(len(test_config)!=len(test_groups)):
+            raise Exception("Invalid config length, length is currently "+ str(len(test_config))+", should be length: "+ str(len(test_groups)))
+        # test_config is a json of app names mapped to of "OFF", "ON", or "FAILED"
+        # "OFF" represents a disabled test_group
+        # "ON" represents an enabled test_group
+        # "FAILED" represents a test_group that has failed previously and is will have its output suppressed to prevent spam
+        # Config values of "ON" and "FAILED" will be tested
+        original_config=copy.deepcopy(test_config)
+        if "--local-only" in args:
+            local_only=True
+
     case _:
         raise Exception("Invalid args, can use the following: [--use-config] [--local-only]")
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  APPLICATION CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,10 +101,10 @@ for test_group in test_groups:
         test_group.slack_message.text = slack_message_text
         # Always print output for debugging purposes
         # print(test_group.slack_message.text)
-
-f = open("./src/test_config.json", "w")
-f.write(str(test_config))
-f.close()
+if locally_run:
+    f = open("./src/test_config.json", "w")
+    f.write(str(test_config))
+    f.close()
 print("TEST_CONFIG="+str(test_config))
 
 # Send output to server if necessary
