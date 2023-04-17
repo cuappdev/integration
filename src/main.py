@@ -30,16 +30,16 @@ match sys.argv[1:]:
         if locally_run:
             with open('./src/test_config.json','r') as file:
                 j=json.loads(file.read())
-                test_config= Config(j) 
         else:
-            try:
-                j=json.loads(environ["TEST_CONFIG"])
-                test_config= Config(j)
-            except:
-                test_config= default_config
+            j=json.loads(environ["TEST_CONFIG"])
+
+        try:
+            test_config= Config(j) 
+        except: 
+            test_config= default_config
 
         if(len(test_config)!=len(test_groups)):
-            raise Exception("Invalid config length, length is currently "+ str(len(test_config))+", should be length: "+ str(len(test_groups)))
+            raise Exception(f'Invalid config length, length is currently {len(test_config)}, should be length: {str(len(test_groups))}')
         # test_config is a json of app names mapped to of "OFF", "ON", or "FAILED"
         # "OFF" represents a disabled test_group
         # "ON" represents an enabled test_group
@@ -100,12 +100,12 @@ for test_group in test_groups:
             slack_message_text = "*`{0}/{0}` tests passed :white_check_mark:*".format(num_test_group_tests)
         test_group.slack_message.text = slack_message_text
         # Always print output for debugging purposes
-        # print(test_group.slack_message.text)
+        print(test_group.slack_message.text)
 if locally_run:
     f = open("./src/test_config.json", "w")
     f.write(str(test_config))
     f.close()
-print("TEST_CONFIG="+str(test_config))
+print(f'TEST_CONFIG={test_config}')
 
 # Send output to server if necessary
 if local_only:
@@ -114,7 +114,7 @@ if local_only:
 CURL_PREFIX = """curl -X POST -H 'Content-type: application/json' --silent --output /dev/null --data """
 
 for test_group in test_groups:
-    if original_config.get(test_group.name)=="ON" and test_config.get(test_group.name)=="FAILED" or original_config.get(test_group.name)=="FAILED" and test_config.get(test_group.name)=="ON":
+    if (original_config.get(test_group.name)=="ON" and test_config.get(test_group.name)=="FAILED") or (original_config.get(test_group.name)=="FAILED" and test_config.get(test_group.name)=="ON"):
         # Only output test groups that were passing but newly failed, or were failing but newly passed
         # Suppress output, this behavior can be changed in the future!
         if test_group.slack_message.should_send:
