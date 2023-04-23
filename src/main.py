@@ -101,11 +101,13 @@ for test_group in test_groups:
         test_group.slack_message.text = slack_message_text
         # Always print output for debugging purposes
         print(test_group.slack_message.text)
+
 if locally_run:
     f = open("./src/test_config.json", "w")
     f.write(str(test_config))
     f.close()
 print(f'TEST_CONFIG={test_config}')
+
 
 # Send output to server if necessary
 if local_only:
