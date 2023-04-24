@@ -48,6 +48,7 @@ match sys.argv[1:]:
         original_config=copy.deepcopy(test_config)
         if "--local-only" in args:
             local_only=True
+
     case _:
         raise Exception("Invalid args, can use the following: [--use-config] [--local-only]")
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  APPLICATION CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
