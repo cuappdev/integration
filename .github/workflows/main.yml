@@ -43,6 +43,7 @@ jobs:
         run: source venv/bin/activate; python src/main.py --use-config >> $GITHUB_ENV
       - name: Save the config
         run: |
+          echo ${{ env.ORIGINAL_CONFIG }}
           echo ${{ env.TEST_CONFIG }} > src/test_config.txt
           git config user.name github-actions
           git config user.email github-actions@github.com
