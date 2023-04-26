@@ -26,13 +26,13 @@ match sys.argv[1:]:
         test_config = default_config
         local_only=True
     case ["--use-config", *args]:
-        if locally_run:
-            with open('./src/test_config.json','r') as file:
-                j=json.loads(file.read())
-        else:
-            j=json.loads(environ["TEST_CONFIG"])
-
         try:
+            if locally_run:
+                with open('./src/test_config.json','r') as file:
+                    j=json.loads(file.read())
+            else:
+                j=json.loads(environ["TEST_CONFIG"])
+
             test_config= Config(j) 
         except: 
             test_config= default_config
