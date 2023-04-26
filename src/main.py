@@ -27,10 +27,11 @@ match sys.argv[1:]:
         local_only=True
     case ["--use-config", *args]:
         try:
-            with open('./src/test_config.txt','r') as file:
+            with open('src/test_config.txt','r') as file:
                 j=json.loads(file.read())
             test_config= Config(j) 
-        except: 
+        except Exception as e: 
+            print("ERROR= "+e)
             test_config= default_config
 
         if(len(test_config)!=len(test_groups)):
