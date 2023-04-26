@@ -106,11 +106,11 @@ class Config:
 
     SETTINGS = ["ON", "OFF", "FAILED"]
 
-    def __init__(self, config_json):
+    def __init__(self, config):
         self._config = {}
-        
-        for config in config_json[1:-1].split(","):
-            k, v = config.split(": ")
+        config = config.replace("{","").replace("}","").split(",")
+        for c in config:
+            k, v = c.split(": ")
             self._config[k] = v
 
     @classmethod
