@@ -110,6 +110,7 @@ class Config:
         self._config = {}
         config = config.replace("{","").replace("}","").split(",")
         for c in config:
+            c = c.strip().replace("\"","")
             k, v = c.split(": ")
             self._config[k] = v
 
