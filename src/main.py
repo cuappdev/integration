@@ -30,7 +30,7 @@ match sys.argv[1:]:
             with open('./src/test_config.json','r') as file:
                 j=json.loads(file.read())
             test_config= Config(j) 
-        except Exception as e: 
+        except: 
             test_config= default_config
 
         if(len(test_config)!=len(test_groups)):
@@ -94,7 +94,8 @@ for test_group in test_groups:
             test_config.set(test_group.name,"ON") # The test group has passed, stays ON
             slack_message_text = "*`{0}/{0}` tests passed :white_check_mark:*".format(num_test_group_tests)
         test_group.slack_message.text = slack_message_text
-        print(test_group.slack_message.text)
+        if locally_run:
+            print(test_group.slack_message.text)
 
 if locally_run:
     f = open("./src/test_config.json", "w")
