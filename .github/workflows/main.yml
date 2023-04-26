@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          ref: run-job
       - name: Setup Python
         uses: actions/setup-python@v1
         with:
@@ -18,6 +20,8 @@ jobs:
           architecture: "x64"
       - name: Install dependencies
         run: python3.10 -m venv venv; source venv/bin/activate; pip install -r requirements.txt
+      - name: Check branch
+        run: git branch
       - name: Run main.py
         env:
           LOCALLY_RUN: false
@@ -39,7 +43,8 @@ jobs:
         run: source venv/bin/activate; python src/main.py --use-config >> $GITHUB_ENV
       - name: Save the config
         run: |
-          echo ${{ env.TEST_CONFIG }} > src/test_config.json
+          echo ${{ env.ORIGINAL_CONFIG }}
+          echo ${{ env.TEST_CONFIG }} > src/test_config.txt
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add .
