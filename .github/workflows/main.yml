@@ -41,9 +41,9 @@ jobs:
           UPLIFT_BACKEND_URL: ${{ secrets.UPLIFT_BACKEND_URL }}
           VOLUME_BACKEND_URL: ${{ secrets.VOLUME_BACKEND_URL }}
         run: |
-        source venv/bin/activate; python src/main.py --use-config >> $GITHUB_ENV
-        echo ${{ env.ORIGINAL_CONFIG }}
-        echo ${{ env.TEST_CONFIG }} > src/test_config.txt
+          source venv/bin/activate; python src/main.py --use-config >> $GITHUB_ENV
+          echo ${{ env.ORIGINAL_CONFIG }}
+          echo ${{ env.TEST_CONFIG }} > src/test_config.txt
       - name: Save the config
         if: env.ORIGINAL_CONFIG != env.TEST_CONFIG
         run: |
