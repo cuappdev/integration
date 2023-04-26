@@ -31,7 +31,7 @@ match sys.argv[1:]:
                 j=json.loads(file.read())
             test_config= Config(j) 
         except Exception as e: 
-            print("ERROR= "+e)
+            print(e)
             test_config= default_config
 
         if(len(test_config)!=len(test_groups)):
