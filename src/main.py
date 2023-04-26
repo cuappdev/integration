@@ -28,10 +28,10 @@ match sys.argv[1:]:
     case ["--use-config", *args]:
         try:
             with open('src/test_config.txt','r') as file:
-                j=json.loads(file.read())
+                j=file.read()
             test_config= Config(j) 
         except Exception as e: 
-            print(e)
+            print(f'ERROR={e}')
             test_config= default_config
 
         if(len(test_config)!=len(test_groups)):

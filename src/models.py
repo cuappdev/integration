@@ -107,7 +107,11 @@ class Config:
     SETTINGS = ["ON", "OFF", "FAILED"]
 
     def __init__(self, config_json):
-        self._config = json.loads(config_json)
+        self._config = {}
+        
+        for config in config_json[1:-1].split(","):
+            k, v = config.split(": ")
+            self._config[k] = v
 
     @classmethod
     def create_default_config(cls, test_groups):
