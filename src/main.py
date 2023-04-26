@@ -34,7 +34,8 @@ match sys.argv[1:]:
                 j=json.loads(environ["TEST_CONFIG"])
 
             test_config= Config(j) 
-        except: 
+        except Exception as e: 
+            print(e)
             test_config= default_config
 
         if(len(test_config)!=len(test_groups)):
