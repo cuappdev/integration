@@ -111,7 +111,7 @@ class Config:
 
     @classmethod
     def create_default_config(cls, test_groups):
-        default_json = {app.name: "ON" for app in test_groups}
+        default_json = json.dumps({app.name: "ON" for app in test_groups})
         return cls(default_json)
 
     def __len__(self):
