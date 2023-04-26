@@ -18,8 +18,6 @@ jobs:
           architecture: "x64"
       - name: Install dependencies
         run: python3.10 -m venv venv; source venv/bin/activate; pip install -r requirements.txt
-      - name: Output config
-        run: echo "${{ env.TEST_CONFIG }}"
       - name: Run main.py
         env:
           LOCALLY_RUN: false
@@ -39,5 +37,3 @@ jobs:
           UPLIFT_BACKEND_URL: ${{ secrets.UPLIFT_BACKEND_URL }}
           VOLUME_BACKEND_URL: ${{ secrets.VOLUME_BACKEND_URL }}
         run: source venv/bin/activate; python src/main.py --use-config
-      - name: Output config
-        run: echo "${{ env.TEST_CONFIG }}"
