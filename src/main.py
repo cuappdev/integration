@@ -101,7 +101,7 @@ if locally_run:
     f = open("./src/test_config.json", "w")
     f.write(str(test_config))
     f.close()
-print(f'TEST_CONFIG={test_config}')
+print(f'TEST_CONFIG={json.dumps(test_config)}')
 
 
 # Send output to server if necessary
