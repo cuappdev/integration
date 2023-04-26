@@ -20,8 +20,6 @@ jobs:
           architecture: "x64"
       - name: Install dependencies
         run: python3.10 -m venv venv; source venv/bin/activate; pip install -r requirements.txt
-      - name: Check branch
-        run: git branch
       - name: Run main.py
         env:
           LOCALLY_RUN: false
@@ -42,6 +40,8 @@ jobs:
           VOLUME_BACKEND_URL: ${{ secrets.VOLUME_BACKEND_URL }}
         run: |
           source venv/bin/activate; python src/main.py --use-config >> $GITHUB_ENV
+      - name: Save config
+        run: |
           echo ${{ env.ORIGINAL_CONFIG }}
           echo ${{ env.TEST_CONFIG }} > src/test_config.txt
       - name: Save the config
