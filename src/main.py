@@ -115,9 +115,6 @@ if local_only:
 CURL_PREFIX = """curl -X POST -H 'Content-type: application/json' --silent --output /dev/null --data """
 
 for test_group in test_groups:
-    print(original_config.get(test_group.name))
-    print(test_config.get(test_group.name))
-    print("\n\n")
     if (original_config.get(test_group.name)=="ON" and test_config.get(test_group.name)=="FAILED") or (original_config.get(test_group.name)=="FAILED" and test_config.get(test_group.name)=="ON"):
         # Only output test groups that were passing but newly failed, or were failing but newly passed
         # Suppress output, this behavior can be changed in the future!
