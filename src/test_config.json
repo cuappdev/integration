@@ -1,1 +1,7 @@
-{CourseGrab: ON, Eatery: ON, Transit Dev: ON, Transit Prod: ON, Volume: ON}
+{
+  "CourseGrab": "ON",
+  "Eatery": "ON",
+  "Transit Dev": "ON",
+  "Transit Prod": "ON",
+  "Volume": "ON"
+}
