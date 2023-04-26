@@ -16,9 +16,8 @@ from volume import volume_tests
 test_groups = [coursegrab_tests,eatery_tests,transit_dev_tests,transit_prod_tests,volume_tests]
 test_config = None
 default_config=Config.create_default_config(test_groups)
-original_config = copy.deepcopy(default_config)
 local_only = False 
-locally_run = environ['LOCALLY_RUN']
+locally_run = environ['LOCALLY_RUN'] == 'true'
 
 match sys.argv[1:]:
     case []:
@@ -45,13 +44,13 @@ match sys.argv[1:]:
         # "ON" represents an enabled test_group
         # "FAILED" represents a test_group that has failed previously and is will have its output suppressed to prevent spam
         # Config values of "ON" and "FAILED" will be tested
-        original_config=copy.deepcopy(test_config)
         if "--local-only" in args:
             local_only=True
 
     case _:
         raise Exception("Invalid args, can use the following: [--use-config] [--local-only]")
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  APPLICATION CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+original_config = copy.deepcopy(test_config)
 
 SUCCESS_STATUS = "SUCCESS"
 FAILURE_STATUS = "FAILURE"
@@ -99,7 +98,8 @@ for test_group in test_groups:
             test_config.set(test_group.name,"ON") # The test group has passed, stays ON
             slack_message_text = "*`{0}/{0}` tests passed :white_check_mark:*".format(num_test_group_tests)
         test_group.slack_message.text = slack_message_text
-        
+        if locally_run:
+            print(test_group.slack_message.text)
 
 if locally_run:
     f = open("./src/test_config.json", "w")
@@ -115,6 +115,9 @@ if local_only:
 CURL_PREFIX = """curl -X POST -H 'Content-type: application/json' --silent --output /dev/null --data """
 
 for test_group in test_groups:
+    print(original_config.get(test_group.name))
+    print(test_config.get(test_group.name))
+    print("\n\n")
     if (original_config.get(test_group.name)=="ON" and test_config.get(test_group.name)=="FAILED") or (original_config.get(test_group.name)=="FAILED" and test_config.get(test_group.name)=="ON"):
         # Only output test groups that were passing but newly failed, or were failing but newly passed
         # Suppress output, this behavior can be changed in the future!
