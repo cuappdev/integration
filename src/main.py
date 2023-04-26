@@ -11,9 +11,10 @@ from coursegrab import coursegrab_tests
 from eatery import eatery_tests 
 from transit import transit_dev_tests, transit_prod_tests
 from volume import volume_tests
+from uplift import uplift_tests
 
 # And add the test group here as well!
-test_groups = [coursegrab_tests,eatery_tests,transit_dev_tests,transit_prod_tests,volume_tests]
+test_groups = [coursegrab_tests,eatery_tests,transit_dev_tests,transit_prod_tests,volume_tests, uplift_tests]
 test_config = None
 default_config=Config.create_default_config(test_groups)
 local_only = False 
@@ -35,7 +36,8 @@ match sys.argv[1:]:
             test_config= default_config
 
         if(len(test_config)!=len(test_groups)):
-            raise Exception(f'Invalid config length, length is currently {len(test_config)}, should be length: {str(len(test_groups))}')
+            print(f'ERROR=Invalid config length, length is currently {len(test_config)}, should be length: {str(len(test_groups))}')
+            test_config = default_config
         # test_config is a json of app names mapped to of "OFF", "ON", or "FAILED"
         # "OFF" represents a disabled test_group
         # "ON" represents an enabled test_group
