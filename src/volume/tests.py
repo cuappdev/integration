@@ -77,8 +77,7 @@ tests = [
     Test(
         name="Fields that should never be empty for articles query",
         request=Request(method="GET", url=BASE_URL + URL_PARAMS_ARTICLES_NON_EMPTY),
-        #callback=all_article_fields_non_empty,
-        callback=lambda x: False,
+        callback=all_article_fields_non_empty,
     ),
     Test(
         name="Fields that should never be empty for publications query",
