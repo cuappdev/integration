@@ -76,7 +76,7 @@ tests = [
     Test(name="Articles query", request=Request(method="GET", url=BASE_URL + URL_PARAMS_ARTICLES)),
     Test(
         name="Fields that should never be empty for articles query",
-        request=Request(method="GET", url=BASE_URL + URL_PARAMS_ARTICLES_NON_EMPTY),
+        request=Request(method="GET", url=BASE_URL + URL_PARAMS_ARTICLES),
         callback=all_article_fields_non_empty,
     ),
     Test(
