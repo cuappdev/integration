@@ -101,6 +101,7 @@ if locally_run:
     f = open("./src/test_config.txt", "w")
     f.write(str(test_config))
     f.close()
+print(f'ORIGINAL_CONFIG={original_config}')
 print(f'TEST_CONFIG={test_config}')
 
 
