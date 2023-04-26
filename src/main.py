@@ -16,9 +16,8 @@ from volume import volume_tests
 test_groups = [coursegrab_tests,eatery_tests,transit_dev_tests,transit_prod_tests,volume_tests]
 test_config = None
 default_config=Config.create_default_config(test_groups)
-original_config = copy.deepcopy(default_config)
 local_only = False 
-locally_run = environ['LOCALLY_RUN']
+locally_run = environ['LOCALLY_RUN'] == 'true'
 
 match sys.argv[1:]:
     case []:
@@ -27,13 +26,9 @@ match sys.argv[1:]:
         test_config = default_config
         local_only=True
     case ["--use-config", *args]:
-        if locally_run:
+        try:
             with open('./src/test_config.json','r') as file:
                 j=json.loads(file.read())
-        else:
-            j=json.loads(environ["TEST_CONFIG"])
-
-        try:
             test_config= Config(j) 
         except: 
             test_config= default_config
@@ -45,13 +40,13 @@ match sys.argv[1:]:
         # "ON" represents an enabled test_group
         # "FAILED" represents a test_group that has failed previously and is will have its output suppressed to prevent spam
         # Config values of "ON" and "FAILED" will be tested
-        original_config=copy.deepcopy(test_config)
         if "--local-only" in args:
             local_only=True
 
     case _:
         raise Exception("Invalid args, can use the following: [--use-config] [--local-only]")
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  APPLICATION CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+original_config = copy.deepcopy(test_config)
 
 SUCCESS_STATUS = "SUCCESS"
 FAILURE_STATUS = "FAILURE"
@@ -99,7 +94,8 @@ for test_group in test_groups:
             test_config.set(test_group.name,"ON") # The test group has passed, stays ON
             slack_message_text = "*`{0}/{0}` tests passed :white_check_mark:*".format(num_test_group_tests)
         test_group.slack_message.text = slack_message_text
-        
+        if locally_run:
+            print(test_group.slack_message.text)
 
 if locally_run:
     f = open("./src/test_config.json", "w")

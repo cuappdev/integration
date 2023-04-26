@@ -12,7 +12,7 @@ Environment variables can be found by asking a member of AppDev.
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-python ./src/main.py --local-only
+python ./src/main.py --use-config --local-only
 ```
 
 ## Features

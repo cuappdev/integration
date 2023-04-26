@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
       - name: Setup Python
         uses: actions/setup-python@v1
         with:
@@ -20,7 +20,7 @@ jobs:
         run: python3.10 -m venv venv; source venv/bin/activate; pip install -r requirements.txt
       - name: Run main.py
         env:
-          LOCALLY_RUN: False
+          LOCALLY_RUN: false
           SLACK_HOOK_COURSEGRAB_URL: ${{ secrets.SLACK_HOOK_COURSEGRAB_URL }}
           SLACK_HOOK_EATERY_URL: ${{ secrets.SLACK_HOOK_EATERY_URL }}
           SLACK_HOOK_TRANSIT_URL: ${{ secrets.SLACK_HOOK_TRANSIT_URL }}
@@ -37,5 +37,11 @@ jobs:
           UPLIFT_BACKEND_URL: ${{ secrets.UPLIFT_BACKEND_URL }}
           VOLUME_BACKEND_URL: ${{ secrets.VOLUME_BACKEND_URL }}
         run: source venv/bin/activate; python src/main.py --use-config >> $GITHUB_ENV
-      - name: Output config
-        run: echo "${{ env.TEST_CONFIG }}"
+      - name: Save the config
+        run: |
+          echo ${{ env.TEST_CONFIG }} > src/test_config.json
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "Generate test_config"
+          git push

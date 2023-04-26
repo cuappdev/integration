@@ -17,7 +17,7 @@ jobs:
         run: python3.10 -m venv venv; source venv/bin/activate; pip install -r requirements.txt
       - name: Run main.py
         env:
-          LOCALLY_RUN: False
+          LOCALLY_RUN: false
           SLACK_HOOK_COURSEGRAB_URL: ${{ secrets.SLACK_HOOK_COURSEGRAB_URL }}
           SLACK_HOOK_EATERY_URL: ${{ secrets.SLACK_HOOK_EATERY_URL }}
           SLACK_HOOK_TRANSIT_URL: ${{ secrets.SLACK_HOOK_TRANSIT_URL }}
@@ -33,4 +33,4 @@ jobs:
           TRANSIT_DEV_BACKEND_URL: ${{ secrets.TRANSIT_DEV_BACKEND_URL }}
           UPLIFT_BACKEND_URL: ${{ secrets.UPLIFT_BACKEND_URL }}
           VOLUME_BACKEND_URL: ${{ secrets.VOLUME_BACKEND_URL }}
-        run: source venv/bin/activate; python src/main.py --local-only
+        run: source venv/bin/activate; python src/main.py --use-config --local-only
