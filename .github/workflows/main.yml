@@ -18,6 +18,8 @@ jobs:
           architecture: "x64"
       - name: Install dependencies
         run: python3.10 -m venv venv; source venv/bin/activate; pip install -r requirements.txt
+      - name: Output config
+        run: echo "${{ env.TEST_CONFIG }}"
       - name: Run main.py
         env:
           LOCALLY_RUN: false
