@@ -27,7 +27,7 @@ match sys.argv[1:]:
         local_only=True
     case ["--use-config", *args]:
         try:
-            with open('./src/test_config.json','r') as file:
+            with open('./src/test_config.txt','r') as file:
                 j=json.loads(file.read())
             test_config= Config(j) 
         except: 
@@ -98,7 +98,7 @@ for test_group in test_groups:
             print(test_group.slack_message.text)
 
 if locally_run:
-    f = open("./src/test_config.json", "w")
+    f = open("./src/test_config.txt", "w")
     f.write(str(test_config))
     f.close()
 print(f'TEST_CONFIG={test_config}')
