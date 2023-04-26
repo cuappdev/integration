@@ -2,6 +2,8 @@ from os import environ
 from subprocess import call
 import sys
 import json
+import copy
+
 from models import Application, Result, Config
 
 # Add more test directories here...
@@ -13,9 +15,10 @@ from volume import volume_tests
 # And add the test group here as well!
 test_groups = [coursegrab_tests,eatery_tests,transit_dev_tests,transit_prod_tests,volume_tests]
 test_config = None
-copy_config = None
 default_config=Config.create_default_config(test_groups)
+original_config = copy.deepcopy(default_config)
 local_only = False 
+locally_run = environ['LOCALLY_RUN']
 
 match sys.argv[1:]:
     case []:
@@ -24,19 +27,28 @@ match sys.argv[1:]:
         test_config = default_config
         local_only=True
     case ["--use-config", *args]:
-        with open('./test_config.json','r') as file:
-            j=file.read()
-            test_config= Config(json.loads(j))
-            if(len(test_config)!=len(test_groups)):
-                raise Exception("Invalid config length, length is currently "+ str(len(test_config))+", should be length: "+ str(len(test_groups)))
-            # test_config is a json of app names mapped to of "OFF", "ON", or "FAILED"
-            # "OFF" represents a disabled test_group
-            # "ON" represents an enabled test_group
-            # "FAILED" represents a test_group that has failed previously and is will have its output suppressed to prevent spam
-            # Config values of "ON" and "FAILED" will be tested
-            copy_config=Config(json.loads(j))
-            if "--local-only" in args:
-                local_only=True
+        if locally_run:
+            with open('./src/test_config.json','r') as file:
+                j=json.loads(file.read())
+        else:
+            j=json.loads(environ["TEST_CONFIG"])
+
+        try:
+            test_config= Config(j) 
+        except: 
+            test_config= default_config
+
+        if(len(test_config)!=len(test_groups)):
+            raise Exception(f'Invalid config length, length is currently {len(test_config)}, should be length: {str(len(test_groups))}')
+        # test_config is a json of app names mapped to of "OFF", "ON", or "FAILED"
+        # "OFF" represents a disabled test_group
+        # "ON" represents an enabled test_group
+        # "FAILED" represents a test_group that has failed previously and is will have its output suppressed to prevent spam
+        # Config values of "ON" and "FAILED" will be tested
+        original_config=copy.deepcopy(test_config)
+        if "--local-only" in args:
+            local_only=True
+
     case _:
         raise Exception("Invalid args, can use the following: [--use-config] [--local-only]")
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  APPLICATION CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -90,18 +102,22 @@ for test_group in test_groups:
         # Always print output for debugging purposes
         print(test_group.slack_message.text)
 
-f = open("./test_config.json", "w")
-f.write(str(test_config))
-f.close()
+if locally_run:
+    f = open("./src/test_config.json", "w")
+    f.write(str(test_config))
+    f.close()
+print(f'TEST_CONFIG={test_config}')
 
 
 # Send output to server if necessary
 if local_only:
     exit()
 
-CURL_PREFIX = """curl -X POST -H 'Content-type: application/json' --data """
+CURL_PREFIX = """curl -X POST -H 'Content-type: application/json' --silent --output /dev/null --data """
+
 for test_group in test_groups:
-    if copy_config.get(test_group.name)=="ON" or test_config.get(test_group.name)=="ON": # Only output enabled test groups, which include newly failing ones
+    if (original_config.get(test_group.name)=="ON" and test_config.get(test_group.name)=="FAILED") or (original_config.get(test_group.name)=="FAILED" and test_config.get(test_group.name)=="ON"):
+        # Only output test groups that were passing but newly failed, or were failing but newly passed
         # Suppress output, this behavior can be changed in the future!
         if test_group.slack_message.should_send:
             CURL_BODY = """'{{ "text": "{}" }}' """.format(test_group.slack_message.text)
