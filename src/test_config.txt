@@ -1,1 +1,1 @@
-{CourseGrab: ON, Eatery: FAILED, Transit Dev: FAILED, Transit Prod: FAILED, Volume: ON, Uplift: ON}
+{CourseGrab: ON, Eatery: FAILED, Transit Dev: FAILED, Transit Prod: FAILED, Volume: ON, Uplift: FAILED}
