@@ -64,17 +64,18 @@ URL_PARAMS_PUBLICATIONS_NON_EMPTY = "?query=" + parse.quote(  # url encoding
 
 def all_article_fields_non_empty(r):
     response = r.json()
-    raise Exception(f'{response}')
     try:
         return all(response["data"]["getAllArticles"])
     except:
-        raise Exception(f'{response}')
+        raise False
 
 
 def all_publication_fields_non_empty(r):
     response = r.json()
-    return all(response["data"]["getAllPublications"])
-
+    try:
+        return all(response["data"]["getAllPublications"])
+    except:
+        raise False
 
 tests = [
     Test(name="Articles query", request=Request(method="GET", url=BASE_URL + URL_PARAMS_ARTICLES)),
