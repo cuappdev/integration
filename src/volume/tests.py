@@ -67,7 +67,7 @@ def all_article_fields_non_empty(r):
     try:
         return all(response["data"]["getAllArticles"])
     except:
-        raise False
+        return False
 
 
 def all_publication_fields_non_empty(r):
@@ -75,7 +75,7 @@ def all_publication_fields_non_empty(r):
     try:
         return all(response["data"]["getAllPublications"])
     except:
-        raise False
+        return False
 
 tests = [
     Test(name="Articles query", request=Request(method="GET", url=BASE_URL + URL_PARAMS_ARTICLES)),
