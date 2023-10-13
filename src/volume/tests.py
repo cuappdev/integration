@@ -64,6 +64,7 @@ URL_PARAMS_PUBLICATIONS_NON_EMPTY = "?query=" + parse.quote(  # url encoding
 
 def all_article_fields_non_empty(r):
     response = r.json()
+    raise Exception(f'{response}')
     try:
         return all(response["data"]["getAllArticles"])
     except:
