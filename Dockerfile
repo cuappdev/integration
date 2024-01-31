@@ -7,5 +7,5 @@ COPY /src .
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY /src/scheduled_run.txt /etc/cron.d/scheduled_run
+COPY scheduled_run.txt /etc/cron.d/scheduled_run
 RUN crontab /etc/cron.d/scheduled_run
