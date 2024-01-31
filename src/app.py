@@ -5,11 +5,11 @@ from main import run_tests
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route("/integration/")
 def hello_world():
     return "<h3>Hello World!</h3>"
 
-# @app.route("/run_tests", methods=["POST"])
+# @app.route("/integration/run_tests/", methods=["POST"])
 def run():
     run_tests()
 
