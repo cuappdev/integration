@@ -7,35 +7,35 @@ import copy
 from models import Application, Result, Config
 
 # Add more test directories here...
-from coursegrab import coursegrab_tests 
-from eatery import eatery_tests 
+from coursegrab import coursegrab_tests
+from eatery import eatery_tests
 from transit import transit_dev_tests, transit_prod_tests
 from volume import volume_tests
 from uplift import uplift_tests
 
 # And add the test group here as well!
-test_groups = [coursegrab_tests,eatery_tests,transit_dev_tests,transit_prod_tests,volume_tests, uplift_tests]
+test_groups = [coursegrab_tests, eatery_tests, transit_dev_tests, transit_prod_tests, volume_tests, uplift_tests]
 test_config = None
-default_config=Config.create_default_config(test_groups)
-local_only = False 
+default_config = Config.create_default_config(test_groups)
+local_only = False
 locally_run = environ['LOCALLY_RUN'] == 'true'
 
 match sys.argv[1:]:
     case []:
         test_config = default_config
-    case ["--local-only"]: 
+    case ["--local-only"]:
         test_config = default_config
-        local_only=True
+        local_only = True
     case ["--use-config", *args]:
         try:
-            with open('src/test_config.txt','r') as file:
-                j=file.read()
-            test_config= Config(j) 
-        except Exception as e: 
+            with open('src/test_config.txt', 'r') as file:
+                j = file.read()
+            test_config = Config(j)
+        except Exception as e:
             print(f'ERROR={e}')
-            test_config= default_config
+            test_config = default_config
 
-        if(len(test_config)!=len(test_groups)):
+        if len(test_config) != len(test_groups):
             print(f'ERROR=Invalid config length, length is currently {len(test_config)}, should be length: {str(len(test_groups))}')
             test_config = default_config
         # test_config is a json of app names mapped to of "OFF", "ON", or "FAILED"
@@ -44,7 +44,7 @@ match sys.argv[1:]:
         # "FAILED" represents a test_group that has failed previously and is will have its output suppressed to prevent spam
         # Config values of "ON" and "FAILED" will be tested
         if "--local-only" in args:
-            local_only=True
+            local_only = True
 
     case _:
         raise Exception("Invalid args, can use the following: [--use-config] [--local-only]")
@@ -71,7 +71,7 @@ application_slack_hook_mapping = {
 
 
 for test_group in test_groups:
-    if test_config.get(test_group.name)!="OFF":  # Only test enabled or previously failing test groups
+    if test_config.get(test_group.name) != "OFF":  # Only test enabled or previously failing test groups
         slack_message_text = "\tRunning tests for {}...\n".format(test_group.name)
         test_group_failures = 0
         num_test_group_tests = len(test_group.tests)
@@ -88,7 +88,7 @@ for test_group in test_groups:
         slack_message_text += "> ```\n{}```\n".format(diagnostic_text)
 
         if test_group_failures:
-            test_config.set(test_group.name,"FAILED") # The test group has FAILED at least one test
+            test_config.set(test_group.name, "FAILED")  # The test group has FAILED at least one test
             passed_tests = num_test_group_tests - test_group_failures
             slack_message_text += "\t*Summary: `{}/{}` tests passed!* ".format(passed_tests, num_test_group_tests)
             # Tag appropriate users
@@ -97,7 +97,7 @@ for test_group in test_groups:
                 user_ids += ", " + application_user_id_mapping[test_group.application]
             slack_message_text += "cc {}!".format(user_ids)
         else:
-            test_config.set(test_group.name,"ON") # The test group has passed, stays ON
+            test_config.set(test_group.name, "ON")  # The test group has passed, stays ON
             slack_message_text = "*`{0}/{0}` tests passed :white_check_mark:*".format(num_test_group_tests)
         test_group.slack_message.text = slack_message_text
         if locally_run:
@@ -118,12 +118,9 @@ if local_only:
 CURL_PREFIX = """curl -X POST -H 'Content-type: application/json' --silent --output /dev/null --data """
 
 for test_group in test_groups:
-    if (original_config.get(test_group.name)=="ON" and test_config.get(test_group.name)=="FAILED") or (original_config.get(test_group.name)=="FAILED" and test_config.get(test_group.name)=="ON"):
+    if (original_config.get(test_group.name) == "ON" and test_config.get(test_group.name) == "FAILED") or (original_config.get(test_group.name) == "FAILED" and test_config.get(test_group.name) == "ON"):
         # Only output test groups that were passing but newly failed, or were failing but newly passed
         # Suppress output, this behavior can be changed in the future!
         if test_group.slack_message.should_send:
             CURL_BODY = """'{{ "text": "{}" }}' """.format(test_group.slack_message.text)
             call(CURL_PREFIX + CURL_BODY + application_slack_hook_mapping[test_group.application], shell=True)
-
-
-
