@@ -1,4 +1,4 @@
-from os import environ
+from os import environ, path
 from subprocess import call
 import sys
 import copy
@@ -28,7 +28,7 @@ def run_tests():
     elif sys.argv[1] == "--use-config":
         args = sys.argv[2:]
         try:
-            with open('src/config/test_config.txt', 'r') as file:
+            with open(path.join(environ['BASE_DIR'], 'config/test_config.txt'), 'r') as file:
                 j = file.read()
             test_config = Config(j)
         except Exception as e:
@@ -103,7 +103,7 @@ def run_tests():
                 print(test_group.slack_message.text)
 
     if locally_run:
-        f = open("./src/config/test_config.txt", "w")
+        f = open(path.join(environ['BASE_DIR'], 'config/test_config.txt'), "w")
         f.write(str(test_config))
         f.close()
     print(f'ORIGINAL_CONFIG={original_config}')
@@ -125,6 +125,4 @@ def run_tests():
                 call(CURL_PREFIX + CURL_BODY + application_slack_hook_mapping[test_group.application], shell=True)
 
 if __name__ == '__main__':
-    # test1.py executed as script
-    # do something
     run_tests()

@@ -1,6 +1,6 @@
-
 from flask import Flask
 from main import run_tests
+from os import environ, path
 
 app = Flask(__name__)
 
@@ -9,9 +9,11 @@ app = Flask(__name__)
 def hello_world():
     return "<h3>Hello World!</h3>"
 
-# @app.route("/integration/run_tests/", methods=["POST"])
+@app.route("/integration/run_tests/", methods=["POST"])
 def run():
     run_tests()
+    with open(path.join(environ['BASE_DIR'], 'config/test_config.txt'), 'r') as file:
+        return file.read()
 
 
 if __name__ == '__main__':
