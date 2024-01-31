@@ -11,7 +11,7 @@ def hello_world():
 
 @app.route("/integration/run_tests/", methods=["POST"])
 def run():
-    run_tests()
+    run_tests(["--use-config"])
     with open(path.join(environ['BASE_DIR'], 'config/test_config.txt'), 'r') as file:
         return file.read()
 

@@ -12,7 +12,7 @@ from transit import transit_dev_tests, transit_prod_tests
 from volume import volume_tests
 from uplift import uplift_tests
 
-def run_tests():
+def run_tests(args=sys.argv[1:]):
     # And add the test group here as well!
     test_groups = [coursegrab_tests, eatery_tests, transit_dev_tests, transit_prod_tests, volume_tests, uplift_tests]
     test_config = None
@@ -20,13 +20,14 @@ def run_tests():
     local_only = False
     locally_run = environ['LOCALLY_RUN'] == 'true'
 
-    if sys.argv[1:] == []:
+    if args == []:
+        print("Default config")
         test_config = default_config
-    elif sys.argv[1] == "--local-only":
+    elif args[0] == "--local-only":
+        print("Default config, local only")
         test_config = default_config
         local_only = True
-    elif sys.argv[1] == "--use-config":
-        args = sys.argv[2:]
+    elif args[0] == "--use-config":
         try:
             with open(path.join(environ['BASE_DIR'], 'config/test_config.txt'), 'r') as file:
                 j = file.read()
@@ -43,8 +44,11 @@ def run_tests():
         # "ON" represents an enabled test_group
         # "FAILED" represents a test_group that has failed previously and is will have its output suppressed to prevent spam
         # Config values of "ON" and "FAILED" will be tested
-        if "--local-only" in args:
+        if "--local-only" in args[1:]:
+            print("Use config, local only")
             local_only = True
+        else:
+            print("Use config")
     else:
         raise Exception("Invalid args, can use the following: [--use-config] [--local-only]")
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  APPLICATION CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
