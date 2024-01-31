@@ -20,34 +20,33 @@ default_config = Config.create_default_config(test_groups)
 local_only = False
 locally_run = environ['LOCALLY_RUN'] == 'true'
 
-match sys.argv[1:]:
-    case []:
+if sys.argv[1:] == []:
+    test_config = default_config
+elif sys.argv[1] == "--local-only":
+    test_config = default_config
+    local_only = True
+elif sys.argv[1] == "--use-config":
+    args = sys.argv[2:]
+    try:
+        with open('src/config/test_config.txt', 'r') as file:
+            j = file.read()
+        test_config = Config(j)
+    except Exception as e:
+        print(f'ERROR={e}')
         test_config = default_config
-    case ["--local-only"]:
+
+    if len(test_config) != len(test_groups):
+        print(f'ERROR=Invalid config length, length is currently {len(test_config)}, should be length: {str(len(test_groups))}')
         test_config = default_config
+    # test_config is a json of app names mapped to of "OFF", "ON", or "FAILED"
+    # "OFF" represents a disabled test_group
+    # "ON" represents an enabled test_group
+    # "FAILED" represents a test_group that has failed previously and is will have its output suppressed to prevent spam
+    # Config values of "ON" and "FAILED" will be tested
+    if "--local-only" in args:
         local_only = True
-    case ["--use-config", *args]:
-        try:
-            with open('src/test_config.txt', 'r') as file:
-                j = file.read()
-            test_config = Config(j)
-        except Exception as e:
-            print(f'ERROR={e}')
-            test_config = default_config
-
-        if len(test_config) != len(test_groups):
-            print(f'ERROR=Invalid config length, length is currently {len(test_config)}, should be length: {str(len(test_groups))}')
-            test_config = default_config
-        # test_config is a json of app names mapped to of "OFF", "ON", or "FAILED"
-        # "OFF" represents a disabled test_group
-        # "ON" represents an enabled test_group
-        # "FAILED" represents a test_group that has failed previously and is will have its output suppressed to prevent spam
-        # Config values of "ON" and "FAILED" will be tested
-        if "--local-only" in args:
-            local_only = True
-
-    case _:
-        raise Exception("Invalid args, can use the following: [--use-config] [--local-only]")
+else:
+    raise Exception("Invalid args, can use the following: [--use-config] [--local-only]")
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  APPLICATION CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 original_config = copy.deepcopy(test_config)
 
@@ -104,7 +103,7 @@ for test_group in test_groups:
             print(test_group.slack_message.text)
 
 if locally_run:
-    f = open("./src/test_config.txt", "w")
+    f = open("./src/config/test_config.txt", "w")
     f.write(str(test_config))
     f.close()
 print(f'ORIGINAL_CONFIG={original_config}')
