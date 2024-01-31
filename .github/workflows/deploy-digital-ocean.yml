@@ -2,10 +2,8 @@ name: Digital Ocean deployment
 
 on:
   push:
-    paths:
-      - "src/**"
-    branches:
-      - "master"
+    branches: [master]
+  workflow_dispatch:
 
 jobs:
   setup-build-publish-deploy:
