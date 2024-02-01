@@ -1,1 +1,1 @@
-*/3 * * * * cd /usr/app; /usr/local/bin/python /usr/app/main.py --use-config | ifne tee /usr/app/config/test_config.txt 2>&1;
+* */4 * * * cd /usr/app; /usr/local/bin/python /usr/app/main.py --use-config | ifne tee /usr/app/config/test_config.txt 2>&1;
