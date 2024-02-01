@@ -1,1 +1,1 @@
-0 */12 * * * cd /usr/app; /usr/local/bin/python /usr/app/main.py --use-config > /usr/app/cron_err.log 2>&1;
+*/5 * * * * cd /usr/app; /usr/local/bin/python /usr/app/main.py --use-config > /usr/app/cron_err.log 2>&1;
