@@ -8,7 +8,7 @@ idna==2.8
 pre-commit==1.18.3
 requests==2.31.0
 toml==0.10.0
-urllib3==1.26.5
+urllib3==1.26.18
 schedule==1.1.0
 flask==3.0.1
 gunicorn==21.2.0
