@@ -30,12 +30,10 @@ def run_tests(args=sys.argv[1:]):
             with open(path.join(environ['BASE_DIR'], 'config/test_config.txt'), 'r') as file:
                 j = file.read()
             test_config = Config(j)
-        except Exception as e:
-            print(f'ERROR={e}')
+        except Exception:
             test_config = default_config
 
         if len(test_config) != len(test_groups):
-            print(f'ERROR=Invalid config length, length is currently {len(test_config)}, should be length: {str(len(test_groups))}')
             test_config = default_config
         # test_config is a json of app names mapped to of "OFF", "ON", or "FAILED"
         # "OFF" represents a disabled test_group
