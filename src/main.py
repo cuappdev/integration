@@ -26,13 +26,10 @@ def run_tests(args=sys.argv[1:]):
         test_config = default_config
         local_only = True
     elif args[0] == "--use-config":
-        try:
-            with open(path.join(environ['BASE_DIR'], 'config/test_config.txt'), 'r') as file:
-                j = file.read()
-            test_config = Config(j)
-        except Exception:
-            test_config = default_config
-
+        with open(path.join(environ['BASE_DIR'], 'config/test_config.txt'), 'r') as file:
+            j = file.read()
+        test_config = Config(j)
+        
         if len(test_config) != len(test_groups):
             test_config = default_config
         # test_config is a json of app names mapped to of "OFF", "ON", or "FAILED"
