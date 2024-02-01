@@ -28,7 +28,11 @@ def run_tests(args=sys.argv[1:]):
     elif args[0] == "--use-config":
         with open(path.join(environ['BASE_DIR'], 'config/test_config.txt'), 'r') as file:
             j = file.read()
-        test_config = Config(j)
+        try:
+            test_config = Config(j)
+        except Exception as e:
+            print(j)
+            print(e)
         
         if len(test_config) != len(test_groups):
             test_config = default_config
