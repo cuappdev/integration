@@ -9,20 +9,20 @@ URL_PARAMS_GYMS_NON_EMPTY = "?query=" + parse.quote(  # url encoding
     """
     query GymsQuery {
         gyms {
-        	address
+          address
           imageUrl
           latitude
           longitude
           name
           facilities {
               name
-            	facilityType
-            	capacity{
+              facilityType
+              capacity{
                 count
                 percent
                 updated
               }
-            	hours{
+              hours{
                 courtType
                 startTime
                 endTime
