@@ -108,9 +108,9 @@ class Config:
 
     def __init__(self, config):
         self._config = {}
-        config = config.replace("{","").replace("}","").split(",")
+        config = config.replace("{", "").replace("}", "").split(",")
         for c in config:
-            c = c.strip().replace("\"","")
+            c = c.strip().replace("\"", "")
             k, v = c.split(": ")
             self._config[k] = v
 
