@@ -21,10 +21,8 @@ def run_tests(args=sys.argv[1:]):
     locally_run = environ['LOCALLY_RUN'] == 'true'
 
     if args == []:
-        print("Default config")
         test_config = default_config
     elif args[0] == "--local-only":
-        print("Default config, local only")
         test_config = default_config
         local_only = True
     elif args[0] == "--use-config":
@@ -45,10 +43,7 @@ def run_tests(args=sys.argv[1:]):
         # "FAILED" represents a test_group that has failed previously and is will have its output suppressed to prevent spam
         # Config values of "ON" and "FAILED" will be tested
         if "--local-only" in args[1:]:
-            print("Use config, local only")
             local_only = True
-        else:
-            print("Use config")
     else:
         raise Exception("Invalid args, can use the following: [--use-config] [--local-only]")
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  APPLICATION CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,8 +105,7 @@ def run_tests(args=sys.argv[1:]):
         f = open(path.join(environ['BASE_DIR'], 'config/test_config.txt'), "w")
         f.write(str(test_config))
         f.close()
-    print(f'ORIGINAL_CONFIG={original_config}')
-    print(f'TEST_CONFIG={test_config}')
+    print(test_config)
 
 
     # Send output to server if necessary
