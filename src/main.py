@@ -2,7 +2,7 @@ from os import environ, path
 from subprocess import call
 import sys
 import copy
-
+import requests
 from models import Application, Result, Config
 
 # Add more test directories here...

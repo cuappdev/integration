@@ -74,11 +74,13 @@ tests = [
         request=Request(method="GET", url=BASE_URL + URL_PARAMS_GYMS_NON_EMPTY),
         callback=all_gym_fields_non_empty,
     ),
-    Test(
-        name="Fields that should never be empty for classes info query",
-        request=Request(method="GET", url=BASE_URL + URL_PARAMS_CLASSES_NON_EMPTY),
-        callback=all_classes_fields_non_empty,
-    ),
+    # Test(
+    #     name="Fields that should never be empty for classes info query",
+    #     request=Request(method="GET", url=BASE_URL + URL_PARAMS_CLASSES_NON_EMPTY),
+    #     callback=all_classes_fields_non_empty,
+    # ),
+
+    # There doesn't seem to be classes on the api atm
 ]
 
 uplift_tests = TestGroup(application=Application.UPLIFT, name="Uplift", tests=tests)
